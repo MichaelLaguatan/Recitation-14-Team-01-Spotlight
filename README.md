@@ -1,1 +1,1 @@
-# Recitation-14-Team-01-CreativeVideoFinder
+# Recitation-14-Team-01-Spotlight
