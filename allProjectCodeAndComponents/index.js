@@ -84,39 +84,14 @@ app.use(
 
 // TODO - Include your API routes here
 
+
+
+
+
+// default rout
+
 app.get('/', (req, res) => {
-    res.redirect('/login');
-});
-
-app.get('/login', (req, res) => {
-    res.render("pages/login");
-});
-
-app.post('/login', (req, res) => {
-
-    var username = req.body.username;
-
-    db.one(`SELECT * FROM users WHERE username='${username}' LIMIT 1;`)
-    .then(async user => {
-        // check if password from request matches with password in DB
-        const match = await bcrypt.compare(req.body.password, user.password);
-
-        if(match){
-            req.session.user = user;
-            req.session.save();
-            res.redirect('/discover');
-        }else{
-            //throw Error("Incorrect username or password");
-            console.log("Incorrect username or password")
-            res.redirect('/login');
-        }
-       
-
-    })
-    .catch(err => {
-        console.log(err);
-        res.redirect('/register');
-    });
+    res.redirect('/register');
 });
 
 
@@ -124,11 +99,7 @@ app.post('/login', (req, res) => {
 
 
 
-
-
-
-
-
+// "register" page routs
 
 app.get('/register', (req, res) => {
     res.render('pages/register');
@@ -162,7 +133,66 @@ app.post('/register', async (req, res) => {
 
 
 
-// Authentication Middleware.
+
+
+
+
+
+
+
+
+
+
+// "login" page routs
+
+app.get('/login', (req, res) => {
+    res.render("pages/login");
+});
+
+app.post('/login', (req, res) => {
+
+    var username = req.body.username;
+
+    db.one(`SELECT * FROM users WHERE username='${username}' LIMIT 1;`)
+    .then(async user => {
+        // check if password from request matches with password in DB
+        const match = await bcrypt.compare(req.body.password, user.password);
+
+        if(match){
+            req.session.user = user;
+            req.session.save();
+            res.redirect('/home');
+        }else{
+            //throw Error("Incorrect username or password");
+            console.log("Incorrect username or password")
+            res.redirect('/login');
+        }
+       
+
+    })
+    .catch(err => {
+        console.log(err);
+        res.redirect('/register');
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Authentication Middleware
+
 const auth = (req, res, next) => {
   if (!req.session.user) {
     // Default to login page.
@@ -184,39 +214,10 @@ app.use(auth);
 
 
 
+// "home" page routs
 
-
-app.get('/discover', (req, res) => {
-  console.log("bouta do the AXIOS STUFFF");
-  axios({
-    url: `https://app.ticketmaster.com/discovery/v2/events.json`,
-    method: 'GET',
-    dataType: 'json',
-    headers: {
-      'Accept-Encoding': 'application/json',
-    },
-    params: {
-      apikey: process.env.API_KEY,
-      keyword: 'Pitbull', //you can choose any artist/event here
-      size: 10,
-    },
-  })
-  .then(results => {
-    console.log(results.data); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
-    res.render("pages/discover", {
-      results: results,
-    });
-  })
-  .catch(error => {
-    // Handle errors
-    console.log("errors being handled...");
-    console.log(error);
-    res.render("pages/discover", {
-      results: [],
-      message: 'no results returned from search',
-
-    });
-  });
+app.get('/home', (req, res) => {
+    res.render("pages/home");
 });
 
 
@@ -224,6 +225,21 @@ app.get('/discover', (req, res) => {
 
 
 
+
+
+
+
+// "pastVideos" page routs
+
+app.get('/pastVideos', (req, res) => {
+  res.render("pages/pastVideos");
+});
+
+
+
+
+
+// logout routs
 
 app.get("/logout", (req, res) => {
   req.session.destroy();
