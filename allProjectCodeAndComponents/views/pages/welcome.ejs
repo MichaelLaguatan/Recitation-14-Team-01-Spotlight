@@ -1,0 +1,125 @@
+
+<%- include ('../partials/head') %>
+
+
+
+<main>
+
+
+    <div class="col"><%- include ('../partials/message') %></div>
+
+
+
+    <h1> WELCOME</h1>
+    <form action="/test" method="POST">
+    <div class = "row">
+      <div class="col-md-4">
+        <input type="checkbox" id="myCheckbox1" name = "actionmovies" />
+
+        <label for="myCheckbox1"><img src="https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61qCgQZyhOL.jpg" /><p class = "covertext">ACTION MOVIE</p></label>
+        
+      </div>
+      <div class="col-md-4">
+    
+        <input type="checkbox" id="myCheckbox2" name = "comedy"/>
+        <label for="myCheckbox2"><img src="https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61qCgQZyhOL.jpg" /><p class = "covertext">Comedy</p></label>
+      </div>
+      <div class="col-md-4">
+    
+        <input type="checkbox" id="myCheckbox3" name = "romance"/>
+        <label for="myCheckbox3"><img src="https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61qCgQZyhOL.jpg" /><p class = "covertext">Romance</p></label>
+      </div>
+    
+    </div>
+    <input type = "submit" value = "test">
+  </form>
+    
+</main>
+<style>
+
+
+.col-md-4 {
+}
+
+.covertext {
+  position: absolute;
+  width: 100%;
+  top: 40%;
+  text-align: center;
+  z-index: 2;
+  Color:white; 
+text-shadow: 1px 1px 2px black;
+  font-weight: bolder;
+  pointer-events:none;
+  font-size: 2em;
+
+}
+
+input[type="checkbox"][id^="myCheckbox"] {
+  display: none;
+}
+
+label {
+  border: 1px solid #fff;
+  padding: 10px;
+  display: block;
+  position: relative;
+  margin: 10px;
+  cursor: pointer;
+  transition: background-color linear .5s;
+}
+
+label:hover {
+  opacity: 75%;
+}
+
+label:before {
+  background-color: white;
+  color: white;
+  content: " ";
+  display: block;
+  border-radius: 50%;
+  border: 1px solid grey;
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  width: 25px;
+  height: 25px;
+  text-align: center;
+  line-height: 28px;
+  transition-duration: 0.4s;
+  transform: scale(0);
+}
+
+label img {
+  
+  height: 100%;
+  width: 100%;
+  max-height: 20vh;
+  object-fit:scale-down; 
+  transition-duration: 0.2s;
+  transform-origin: 50% 50%;
+
+}
+
+:checked + label {
+  background-color: rgba(0, 204, 255, 0.301);
+  border-color: #ddd;
+  opacity: 75%;
+}
+
+:checked + label:before {
+  content: "✓";
+  background-color: grey;
+  transform: scale(1);
+}
+
+:checked + label img {
+  transform: scale(0.9);
+  /* box-shadow: 0 0 5px #333; */
+  z-index: -1;
+}
+
+</style>
+
+<%- include ('../partials/footer') %>

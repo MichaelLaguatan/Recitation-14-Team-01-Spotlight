@@ -151,13 +151,26 @@ app.post('/register', async (req, res) => {
 `12++`
     db.any(insert_data)
     .then(data => {
-        res.redirect('/login');
+        res.redirect('/welcome');
     })
     .catch(err => {
         console.log('Fs in the chat');
         console.log(err);
         res.redirect('/register');
     });
+});
+
+
+
+
+//TESTING ROUTES 
+app.get('/welcome', (req, res) => {
+  res.render('pages/welcome');
+});
+app.post('/test', async (req, res) => {
+  console.log(req.body)
+  return; 
+
 });
 
 
