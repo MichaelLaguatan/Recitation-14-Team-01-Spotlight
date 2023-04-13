@@ -137,9 +137,9 @@ app.post('/register', async (req, res) => {
 /*
   Intended Usage: 
   This function will give a table of videos that are tied by the users_to_videos table
-  when given a User_id.
+  when given a username.
 */
-function queryAccountVideos(User_id){
+function queryAccountVideos(username){
   var output;
   var query = `
   SELECT 
@@ -150,8 +150,8 @@ function queryAccountVideos(User_id){
     videos.url  
   FROM users_to_videos 
   FULL JOIN videos 
-  ON users_to_videos.movie_id = videos.movie_id 
-  WHERE users_to_videos.user_id = '${User_id}';`
+  ON users_to_videos.video_id = videos.video_id 
+  WHERE users_to_videos.username = '${username}';`
   db.any(query)
     .then(function(data){ 
       output = data; 
@@ -177,7 +177,7 @@ function queryVideoTags(video_id){
   FROM videos_to_tags 
   FULL JOIN tags 
   ON videos_to_tags.tag_id = tags.tag_id 
-  WHERE videos_to_tags.movie_id = '${video_id}';`
+  WHERE videos_to_tags.video_id = '${video_id}';`
   db.any(query)
     .then(function(data){ 
       output = data; 
