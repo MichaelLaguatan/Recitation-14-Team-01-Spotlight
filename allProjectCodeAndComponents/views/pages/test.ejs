@@ -1,0 +1,41 @@
+<%- include ('../partials/header') %>
+
+<main>
+  <div class="container">
+    <button onclick="test()">TEST  ! </button>
+  </div>
+</main>
+
+
+
+<script>
+    const API_KEY = 'AIzaSyAUIeq5EabysWpUAIREp5MdMfyydzVoiQk';
+    const SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search';
+
+    function searchVideosYoutube(query) {
+    const params = {
+        q: query,
+        part: 'snippet',
+        type: 'video',
+        key: API_KEY,
+    };
+
+    const url = SEARCH_URL + '?' + new URLSearchParams(params);
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+        console.log(data.items);
+        // Do something with the search results
+        })
+        .catch(error => console.error(error));
+    }
+
+    // Usage example:
+    function test() {
+        searchVideosYoutube('JavaScript tutorial');
+    }
+    
+
+</script>
+<%- include ('../partials/footer') %>

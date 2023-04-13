@@ -179,10 +179,9 @@ app.post('/login', (req, res) => {
 
 
 
-
-
-
-
+app.get('/test', (req, res) => {
+  res.render("pages/test");
+});
 
 
 
