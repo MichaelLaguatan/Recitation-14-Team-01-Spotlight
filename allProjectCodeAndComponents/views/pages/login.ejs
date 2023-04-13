@@ -8,23 +8,22 @@
 
     <div class="col"><%- include ('../partials/message') %></div>
 
-
-
-
-
-
-    <!-- THE REST OF YOUR HTML CODE GOES HERE -->
     <h2>Login</h2>
 
     <form action="/login" method="POST">
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" />
-        
-        <label for="password">Password</label>
-        <input type="text" id="password" name="password" />
-        
-        <input type="submit" value="login" />
+        <div class="mb-3">
+        <label class="form-label" for="username">Username:</label>
+        <input class="form-control" type="username" id="username" name="username" />
+        </div>
+        <div class="mb-3">
+        <label class="form-label" for="password">Password:</label>
+        <input class="form-control" type="password" id="password" name="password" />
+        </div>
+        <button class="btn btn-primary" type="submit" value="Submit">Login</button>
     </form>
+    <hr>
+    <a>Don't have an account?</a>
+    <a href="/register" method="GET">Register</a>
   </div>
 </main>
 

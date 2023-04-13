@@ -91,7 +91,7 @@ app.use(
 // default rout
 
 app.get('/', (req, res) => {
-    res.redirect('/register');
+    res.redirect('/login');
 });
 
 
