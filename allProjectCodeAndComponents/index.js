@@ -132,9 +132,15 @@ app.post('/register', async (req, res) => {
     });
 });
 
-queryAccountVideos().url
 
+
+/*
+  Intended Usage: 
+  This function will give a table of videos that are tied by the users_to_videos table
+  when given a User_id.
+*/
 function queryAccountVideos(User_id){
+  var output;
   var query = `
   SELECT 
     videos.video_id, 
@@ -148,18 +154,41 @@ function queryAccountVideos(User_id){
   WHERE users_to_videos.user_id = '${User_id}';`
   db.any(query)
     .then(function(data){ 
-      var output = data; 
+      output = data; 
       return;
     })
     .catch(function(err){
-      var output = null;
-      return console.log(err);
+      output = null;
+      return console.log(err + " (Vincent did a goofy D:)");
     });
   return output;
 }
 
-
-
+/*
+  Intended Usage:
+  This function will give a table of all the video's tags when given a video_id.
+*/
+function queryVideoTags(video_id){
+  var output;
+  var query = `
+  SELECT 
+    tags.name, 
+    tags.tag_id 
+  FROM videos_to_tags 
+  FULL JOIN tags 
+  ON videos_to_tags.tag_id = tags.tag_id 
+  WHERE videos_to_tags.movie_id = '${video_id}';`
+  db.any(query)
+    .then(function(data){ 
+      output = data; 
+      return;
+    })
+    .catch(function(err){
+      output = null;
+      return console.log(err + " (Vincent did a goofy D:)");
+    });
+  return output;
+}
 
 
 
