@@ -1,0 +1,4 @@
+TA meeting:
+So far we have set up a functioning website and login page, not musch else.
+We have plans to implement API and database structure by next meeting.
+Next meeting we will have correct project requirements ready to go to present and show off!

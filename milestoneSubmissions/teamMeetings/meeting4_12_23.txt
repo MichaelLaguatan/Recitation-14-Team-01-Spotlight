@@ -1,0 +1,9 @@
+Group meeting:
+Assigned tasks. Glad we have the website up and running right now. Getting organized.
+We will delegate tasks but overall solid progress is being made and every group memeber is ready to contribute and put in work.
+
+Vincent: Build database structures.
+Harrison: Integrate an API, make requests to the API return things.
+Michael: profile page populated from users tab. Includes settings, username, etc.
+Gabe: Welcome page, enhance website design, visually more appealing. Add icon / logo.
+Owen: general front end + back end improvements, project organization, meeting all project requirements.
