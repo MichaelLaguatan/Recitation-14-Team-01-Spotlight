@@ -1,0 +1,47 @@
+<%- include ('../partials/header') %>
+
+<main>
+  <div class="container">
+  <div class="col"><%- include ('../partials/message') %></div>
+  </br>
+    <div class="row position-relative">
+        <div class="col-auto align-middle">
+            <img src="https://img.freepik.com/free-vector/cute-puk-dog-pocket-cartoon-vector-icon-illustration-animal-nature-icon-concept-isolated-premium-vector-flat-cartoon-style_138676-4133.jpg?q=10&h=200" class="img-thumbnail" alt="Profile Picture">
+        </div>
+        <div class="col align-middle" style="margin-top: 80px">
+            <h1>Username</h1>
+        </div>
+    </div>
+    <hr>
+    </br>
+    <h3>Settings</h3>
+    <form class="row g-3">
+    <div class="row g-3 align-items-center">
+        <div class="col-auto">
+            <label for="usernameChange" class="col-form-label">Username:</label>
+        </div>
+        <div class="col-auto">
+            <input type="text" id="usernameChange" class="form-control">
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary" type="submit" value="Submit">Change Username</button>
+        </div>
+    </div>
+    </form>
+    <form class="row g-3">
+    <div class="row g-3 align-items-center">
+        <div class="col-auto">
+            <label for="passwordChange" class="col-form-label">Password:</label>
+        </div>
+        <div class="col-auto">
+            <input type="password" id="passwordChange" class="form-control">
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary" type="submit" value="Submit">Change Password</button>
+        </div>
+    </div>
+    </form>
+  </div>
+</main>
+
+<%- include ('../partials/footer') %>

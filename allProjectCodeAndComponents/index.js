@@ -193,17 +193,17 @@ app.post('/login', (req, res) => {
 
 // Authentication Middleware
 
-const auth = (req, res, next) => {
-  if (!req.session.user) {
-    // Default to login page.
-    return res.redirect('/login');
+// const auth = (req, res, next) => {
+//   if (!req.session.user) {
+//     // Default to login page.
+//     return res.redirect('/login');
     
-  }
-  next();
-};
+//   }
+//   next();
+// };
 
-// Authentication Required
-app.use(auth);
+// // Authentication Required
+// app.use(auth);
 
 
 
@@ -236,7 +236,9 @@ app.get('/pastVideos', (req, res) => {
 });
 
 
-
+app.get('/profile', (req, res) => {
+  res.render("pages/profile");
+});
 
 
 // logout routs
