@@ -57,6 +57,9 @@ app.use(
   })
 );
 
+const user = {
+  username: undefined
+}
 
 // // Authentication Middleware.
 // const auth = (req, res, next) => {
@@ -235,11 +238,37 @@ app.get('/pastVideos', (req, res) => {
   res.render("pages/pastVideos");
 });
 
+// "profile" page routes
 
 app.get('/profile', (req, res) => {
   res.render("pages/profile");
 });
 
+app.post('/usernameChange', (req, res) => {
+  const username = req.body.username;
+  const query = `update users set username = '${username}' where username = '${user.username}';`;
+  db.any(query)
+  .then(data => {
+    user.username = username;
+    res.render("pages/profile", {message: 'username changed succesfully'});
+  })
+  .catch(err => {
+    res.render("pages/profile", {message: 'username changed succesfully'});
+  });
+});
+
+app.post('/passwordChange', async (req, res) => {
+  const hash = await bcrypt.hash(req.body.password, 10);
+  const query = `update users set password = '${hash}' where username = '${user.username}';`;
+  db.any(query)
+  .then(data => {
+    user.password = hash;
+    res.render("pages/profile", {message: 'password changed succesfully'});
+  })
+  .catch(err => {
+    res.render("pages/profile", {message: 'password changed failed'});
+  });
+});
 
 // logout routs
 
