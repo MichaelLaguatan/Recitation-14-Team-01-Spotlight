@@ -58,7 +58,7 @@ app.use(
 );
 
 const user = {
-  username: undefined
+  username: "placeholder"
 }
 
 // // Authentication Middleware.
@@ -163,6 +163,7 @@ app.post('/login', (req, res) => {
 
         if(match){
             req.session.user = user;
+            user.username = username;
             req.session.save();
             res.redirect('/home');
         }else{
@@ -241,7 +242,7 @@ app.get('/pastVideos', (req, res) => {
 // "profile" page routes
 
 app.get('/profile', (req, res) => {
-  res.render("pages/profile");
+  res.render("pages/profile", {user: user});
 });
 
 app.post('/usernameChange', (req, res) => {
@@ -250,10 +251,10 @@ app.post('/usernameChange', (req, res) => {
   db.any(query)
   .then(data => {
     user.username = username;
-    res.render("pages/profile", {message: 'username changed succesfully'});
+    res.render("pages/profile", {message: 'username changed succesfully', user: user});
   })
   .catch(err => {
-    res.render("pages/profile", {message: 'username changed succesfully'});
+    res.render("pages/profile", {message: 'username changed succesfully', user: user});
   });
 });
 
@@ -262,11 +263,10 @@ app.post('/passwordChange', async (req, res) => {
   const query = `update users set password = '${hash}' where username = '${user.username}';`;
   db.any(query)
   .then(data => {
-    user.password = hash;
-    res.render("pages/profile", {message: 'password changed succesfully'});
+    res.render("pages/profile", {message: 'password changed succesfully', user: user});
   })
   .catch(err => {
-    res.render("pages/profile", {message: 'password changed failed'});
+    res.render("pages/profile", {message: 'password changed failed', user: user});
   });
 });
 
