@@ -16,30 +16,30 @@
     </br>
     <h3>Settings</h3>
     <form class="row g-3" action="/usernameChange" method="POST">
-    <div class="row g-3 align-items-center">
-        <div class="col-auto">
-            <label for="usernameChange" class="col-form-label">Username:</label>
+        <div class="row g-3 align-items-center">
+            <div class="col-auto">
+                <label for="usernameChange" class="col-form-label">Enter new username:</label>
+            </div>
+            <div class="col-auto">
+                <input type="username" id="usernameChange" name="username" class="form-control">
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-primary" type="submit" value="Submit">Change Username</button>
+            </div>
         </div>
-        <div class="col-auto">
-            <input type="username" id="usernameChange" name="username" class="form-control">
-        </div>
-        <div class="col-auto">
-            <button class="btn btn-primary" type="submit" value="Submit">Change Username</button>
-        </div>
-    </div>
     </form>
     <form class="row g-3" action="/passwordChange" method="POST">
-    <div class="row g-3 align-items-center">
-        <div class="col-auto">
-            <label for="passwordChange" class="col-form-label">Password:</label>
+        <div class="row g-3 align-items-center">
+            <div class="col-auto">
+                <label for="passwordChange" class="col-form-label">Enter new password:</label>
+            </div>
+            <div class="col-auto">
+                <input type="password" id="passwordChange" name="newPassword" class="form-control">
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-primary" type="submit" value="Submit">Change Password</button>
+            </div>
         </div>
-        <div class="col-auto">
-            <input type="password" id="passwordChange" name="password" class="form-control">
-        </div>
-        <div class="col-auto">
-            <button class="btn btn-primary" type="submit" value="Submit">Change Password</button>
-        </div>
-    </div>
     </form>
   </div>
 </main>

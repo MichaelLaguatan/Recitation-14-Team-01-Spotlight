@@ -57,11 +57,13 @@ app.use(
   })
 );
 
-const user = {
+const userData = {
   username: "placeholder"
 }
 
-// // Authentication Middleware.
+// *****************************************************
+// <!-- Section 4 : Authentication Middleware -->
+// *****************************************************
 // const auth = (req, res, next) => {
 //   if (!req.session.user) {
 //     // Default to login page.
@@ -73,49 +75,23 @@ const user = {
 // // Authentication Required
 // app.use(auth);
 
-
-
-
-
-
-
-
-
 // *****************************************************
-// <!-- Section 4 : API Routes -->
+// <!-- Section 5 : API Routes -->
 // *****************************************************
 
-// TODO - Include your API routes here
-
-
-
-
-
-// default rout
-
+//starting redirect
 app.get('/', (req, res) => {
     res.redirect('/login');
 });
 
-
-
-
-
-
 // "register" page routs
-
 app.get('/register', (req, res) => {
     res.render('pages/register');
 });
 
 // Register
 app.post('/register', async (req, res) => {
-    //hash the password using bcrypt library
     const hash = await bcrypt.hash(req.body.password, 10);
-    
-   
-    // To-DO: Insert username and hashed password into 'users' table
-    
     var password = hash;
     var username = req.body.username;
 
@@ -134,20 +110,7 @@ app.post('/register', async (req, res) => {
     });
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
 // "login" page routs
-
 app.get('/login', (req, res) => {
     res.render("pages/login");
 });
@@ -163,7 +126,7 @@ app.post('/login', (req, res) => {
 
         if(match){
             req.session.user = user;
-            user.username = username;
+            userData.username = username;
             req.session.save();
             res.redirect('/home');
         }else{
@@ -180,69 +143,19 @@ app.post('/login', (req, res) => {
     });
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Authentication Middleware
-
-// const auth = (req, res, next) => {
-//   if (!req.session.user) {
-//     // Default to login page.
-//     return res.redirect('/login');
-    
-//   }
-//   next();
-// };
-
-// // Authentication Required
-// app.use(auth);
-
-
-
-
-
-
-
-
-
-
 // "home" page routs
-
 app.get('/home', (req, res) => {
     res.render("pages/home");
 });
 
-
-
-
-
-
-
-
-
-
 // "pastVideos" page routs
-
 app.get('/pastVideos', (req, res) => {
   res.render("pages/pastVideos");
 });
 
 // "profile" page routes
-
 app.get('/profile', (req, res) => {
-  res.render("pages/profile", {user: user});
+  res.render("pages/profile", {user: userData});
 });
 
 app.post('/usernameChange', (req, res) => {
@@ -250,23 +163,23 @@ app.post('/usernameChange', (req, res) => {
   const query = `update users set username = '${username}' where username = '${user.username}';`;
   db.any(query)
   .then(data => {
-    user.username = username;
-    res.render("pages/profile", {message: 'username changed succesfully', user: user});
+    userData.username = username;
+    res.render("pages/profile", {message: 'username changed succesfully', user: userData});
   })
   .catch(err => {
-    res.render("pages/profile", {message: 'username changed succesfully', user: user});
+    res.render("pages/profile", {message: 'username changed succesfully', user: userData});
   });
 });
 
 app.post('/passwordChange', async (req, res) => {
-  const hash = await bcrypt.hash(req.body.password, 10);
-  const query = `update users set password = '${hash}' where username = '${user.username}';`;
+  const hash = await bcrypt.hash(req.body.newPassword, 10);
+  const query = `update users set password = '${hash}' where username = '${userData.username}';`;
   db.any(query)
   .then(data => {
-    res.render("pages/profile", {message: 'password changed succesfully', user: user});
+    res.render("pages/profile", {message: 'Password changed succesfully', user: userData});
   })
   .catch(err => {
-    res.render("pages/profile", {message: 'password changed failed', user: user});
+    res.render("pages/profile", {message: 'Password changed failed', user: userData});
   });
 });
 
@@ -278,22 +191,6 @@ app.get("/logout", (req, res) => {
     message: 'logged out successfully',
   });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
