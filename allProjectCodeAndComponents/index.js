@@ -125,7 +125,7 @@ app.post('/register', async (req, res) => {
         res.redirect('/login');
     })
     .catch(err => {
-        console.log('Fs in the chat');
+        console.log('Registration failed');
         console.log(err);
         res.redirect('/register');
     });
@@ -159,9 +159,10 @@ app.post('/login', (req, res) => {
         const match = await bcrypt.compare(req.body.password, user.password);
 
         if(match){
-            req.session.user = user;
+            const user = req.session.user; 
             req.session.save();
             res.redirect('/home');
+            console.log('User Login Successful')
         }else{
             //throw Error("Incorrect username or password");
             console.log("Incorrect username or password")
@@ -217,7 +218,7 @@ app.use(auth);
 // "home" page routs
 
 app.get('/home', (req, res) => {
-    res.render("pages/home");
+    res.render("pages/home.ejs");
 });
 
 
@@ -232,7 +233,7 @@ app.get('/home', (req, res) => {
 // "pastVideos" page routs
 
 app.get('/pastVideos', (req, res) => {
-  res.render("pages/pastVideos");
+  res.render("pages/pastVideos.ejs");
 });
 
 
@@ -242,8 +243,9 @@ app.get('/pastVideos', (req, res) => {
 // logout routs
 
 app.get("/logout", (req, res) => {
+  console.log("User logged out successfully")
   req.session.destroy();
-  res.render("pages/login", {
+  res.render("pages/login.ejs", {
     message: 'logged out successfully',
   });
 });
