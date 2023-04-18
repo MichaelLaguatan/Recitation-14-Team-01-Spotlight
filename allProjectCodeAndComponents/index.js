@@ -184,6 +184,30 @@ app.get('/test', (req, res) => {
 });
 
 
+app.get('/results', (req, res) => {
+  const API_KEY = 'AIzaSyAUIeq5EabysWpUAIREp5MdMfyydzVoiQk';
+  const SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search';
+  var query = "js tutorial"
+  
+  const params = {
+    q: query,
+    part: 'snippet',
+    type: 'video',
+    key: API_KEY,
+};
+
+const url = SEARCH_URL + '?' + new URLSearchParams(params);
+
+fetch(url)
+    .then(response => response.json())
+    .then(data => {
+    console.log(data.items);
+    let result = data.items; 
+    res.render('pages/results', { result });
+    })
+    .catch(error => console.error(error));
+});
+
 
 
 

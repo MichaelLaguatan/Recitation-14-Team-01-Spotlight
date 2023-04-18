@@ -21,19 +21,21 @@
     };
 
     const url = SEARCH_URL + '?' + new URLSearchParams(params);
-
+    var returndata;
     fetch(url)
         .then(response => response.json())
         .then(data => {
         console.log(data.items);
-        // Do something with the search results
+        returndata = data; 
         })
         .catch(error => console.error(error));
+    
+
     }
 
     // Usage example:
     function test() {
-        searchVideosYoutube('JavaScript tutorial');
+        console.log(searchVideosYoutube('JavaScript tutorial'));
     }
     
 
