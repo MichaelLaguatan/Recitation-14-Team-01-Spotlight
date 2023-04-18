@@ -128,7 +128,6 @@ app.post('/register', async (req, res) => {
 `12++`
     db.any(insert_data)
     .then(data => {
-        res.json({status: 'success'})
         res.redirect('/login');
     })
     .catch(err => {
@@ -160,10 +159,6 @@ app.get('/login', (req, res) => {
 
 
 app.post('/login', (req, res) => {
-    
-    
-    console.log("req.body issss: ", req.body);
-
     var username = req.body.username;
 
     db.one(`SELECT * FROM users WHERE username='${username}' LIMIT 1;`)
