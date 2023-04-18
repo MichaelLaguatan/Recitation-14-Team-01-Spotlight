@@ -64,19 +64,17 @@ app.use(
 );
 
 
-// Authentication Middleware.
-const auth = (req, res, next) => {
-  if (!req.session.user) {
-    // Default to login page.
-    return res.redirect('/login');
-  }
-  next();
-};
+// // Authentication Middleware.
+// const auth = (req, res, next) => {
+//   if (!req.session.user) {
+//     // Default to login page.
+//     return res.redirect('/login');
+//   }
+//   next();
+// };
 
-// Authentication Required
-app.use(auth);
-
-
+// // Authentication Required
+// app.use(auth);
 
 
 
@@ -84,21 +82,23 @@ app.use(auth);
 
 
 
-// // *****************************************************
-// // <!-- Section 4 : API Routes -->
-// // *****************************************************
-
-// // TODO - Include your API routes here
 
 
+// *****************************************************
+// <!-- Section 4 : API Routes -->
+// *****************************************************
+
+// TODO - Include your API routes here
 
 
 
-// // default rout
 
-// app.get('/', (req, res) => {
-//     res.redirect('/login');
-// });
+
+// default rout
+
+app.get('/', (req, res) => {
+    res.redirect('/login');
+});
 
 
 
@@ -107,36 +107,36 @@ app.use(auth);
 
 // // "register" page routs
 
-// app.get('/register', (req, res) => {
-//     res.render('pages/register');
-// });
+app.get('/register', (req, res) => {
+    res.render('pages/register');
+});
 
-// // Register
-// app.post('/register', async (req, res) => {
-//     //hash the password using bcrypt library
-//     const hash = await bcrypt.hash(req.body.password, 10);
+// Register
+app.post('/register', async (req, res) => {
+    //hash the password using bcrypt library
+    const hash = await bcrypt.hash(req.body.password, 10);
     
    
-//     // To-DO: Insert username and hashed password into 'users' table
+    // To-DO: Insert username and hashed password into 'users' table
     
-//     var password = hash;
-//     var username = req.body.username;
+    var password = hash;
+    var username = req.body.username;
 
-//     var insert_data = `
-//     INSERT INTO users(username, password)
-//     VALUES ('${username}', '${password}');`;
-// `12++`
-//     db.any(insert_data)
-//     .then(data => {
-//         res.json({status: 'success'})
-//         res.redirect('/login');
-//     })
-//     .catch(err => {
-//         console.log('Fs in the chat');
-//         console.log(err);
-//         res.redirect('/register');
-//     });
-// });
+    var insert_data = `
+    INSERT INTO users(username, password)
+    VALUES ('${username}', '${password}');`;
+`12++`
+    db.any(insert_data)
+    .then(data => {
+        res.json({status: 'success'})
+        res.redirect('/login');
+    })
+    .catch(err => {
+        console.log('Fs in the chat');
+        console.log(err);
+        res.redirect('/register');
+    });
+});
 
 
 
@@ -172,7 +172,6 @@ app.post('/login', (req, res) => {
         const match = await bcrypt.compare(req.body.password, user.password);
 
         if(match){
-            res.status(200).json({status: 'success', message: 'Logged in successfully!'});
             req.session.user = user;
             req.session.save();
             res.redirect('/home');
@@ -205,19 +204,6 @@ app.post('/login', (req, res) => {
 
 
 
-// // Authentication Middleware
-
-// const auth = (req, res, next) => {
-//   if (!req.session.user) {
-//     // Default to login page.
-//     return res.redirect('/login');
-    
-//   }
-//   next();
-// };
-
-// // Authentication Required
-// app.use(auth);
 
 
 
@@ -227,12 +213,11 @@ app.post('/login', (req, res) => {
 
 
 
+// "home" page routs
 
-// // "home" page routs
-
-// app.get('/home', (req, res) => {
-//     res.render("pages/home");
-// });
+app.get('/home', (req, res) => {
+    res.render("pages/home");
+});
 
 
 
@@ -243,35 +228,35 @@ app.post('/login', (req, res) => {
 
 
 
-// // "pastVideos" page routs
+// "pastVideos" page routs
 
-// app.get('/pastVideos', (req, res) => {
-//   res.render("pages/pastVideos");
-// });
-
-
+app.get('/pastVideos', (req, res) => {
+  res.render("pages/pastVideos");
+});
 
 
 
-// // logout routs
-
-// app.get("/logout", (req, res) => {
-//   req.session.destroy();
-//   res.render("pages/login", {
-//     message: 'logged out successfully',
-//   });
-// });
 
 
+// logout routs
+
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  res.render("pages/login", {
+    message: 'logged out successfully',
+  });
+});
 
 
 
 
 
 
-// app.get('/welcome', (req, res) => {
-//   res.json({status: 'success', message: 'Welcome!'});
-// });
+
+
+app.get('/welcome', (req, res) => {
+  res.json({status: 'success', message: 'Welcome!'});
+});
 
 
 
