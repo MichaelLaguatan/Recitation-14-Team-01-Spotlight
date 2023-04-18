@@ -13,29 +13,31 @@
     const SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search';
 
     function searchVideosYoutube(query) {
-    const params = {
-        q: query,
-        part: 'snippet',
-        type: 'video',
-        key: API_KEY,
-    };
+      const accessToken = '6205e05dd3f7a3481af13e0de55e9025'; 
+      const searchTerm = query;  // change this to your search term
+      const clientId = 'YOUR_CLIENT_ID';
+      const clientSecret = 'YOUR_CLIENT_SECRET';
+      const apiUrl = `https://api.vimeo.com/videos?query=${searchTerm}`;
+      const headers = {
+        Authorization: `bearer ${accessToken}`
+      };
 
-    const url = SEARCH_URL + '?' + new URLSearchParams(params);
-    var returndata;
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-        console.log(data.items);
-        returndata = data; 
+      fetch(apiUrl, {
+        method: 'GET',
+        headers,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
         })
-        .catch(error => console.error(error));
-    
-
+        .catch((error) => {
+          console.error(error);
+        });
     }
 
     // Usage example:
     function test() {
-        console.log(searchVideosYoutube('JavaScript tutorial'));
+        searchVideosYoutube('JavaScript tutorial')
     }
     
 
