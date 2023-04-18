@@ -1,7 +1,6 @@
 <%- include ('../partials/header') %>
 
 <main>
-  <% if (session.user) { %>
     <div class="container">
       <div class="col"><%- include ('../partials/message') %></div>
       <h2>Welcome Home</h2>
@@ -11,9 +10,6 @@
       </form>
       <h5>Video results displayed below...</h5>
     </div>
-  <% } else { %>
-    <% res.redirect('/'); %>
-  <% } %>
 </main>
 
 <%- include ('../partials/footer') %>

@@ -58,26 +58,6 @@ app.use(
 );
 
 
-// // Authentication Middleware.
-// const auth = (req, res, next) => {
-//   if (!req.session.user) {
-//     // Default to login page.
-//     return res.redirect('/login');
-//   }
-//   next();
-// };
-
-// // Authentication Required
-// app.use(auth);
-
-
-
-
-
-
-
-
-
 // *****************************************************
 // <!-- Section 4 : API Routes -->
 // *****************************************************
@@ -91,12 +71,15 @@ app.use(
 // default rout
 
 app.get('/', (req, res) => {
-    res.redirect('/login');
+    res.redirect('/welcome');
 });
 
 
 
-
+app.get('/welcome', (req,res)=>
+{
+  res.render('pages/welcome.ejs')
+})
 
 
 // "register" page routs
@@ -159,9 +142,9 @@ app.post('/login', (req, res) => {
         const match = await bcrypt.compare(req.body.password, user.password);
 
         if(match){
-            const user = req.session.user; 
+            req.session.user = user;
             req.session.save();
-            res.redirect('/home');
+            res.redirect('/', { user: req.session.user });
             console.log('User Login Successful')
         }else{
             //throw Error("Incorrect username or password");
@@ -192,19 +175,19 @@ app.post('/login', (req, res) => {
 
 
 
-// Authentication Middleware
+// // Authentication Middleware
 
-const auth = (req, res, next) => {
-  if (!req.session.user) {
-    // Default to login page.
-    return res.redirect('/login');
+// const auth = (req, res, next) => {
+//   if (!req.session.user) {
+//     // Default to login page.
+//     return res.redirect('/login');
     
-  }
-  next();
-};
+//   }
+//   next();
+// };
 
-// Authentication Required
-app.use(auth);
+// // Authentication Required
+// app.use(auth);
 
 
 
