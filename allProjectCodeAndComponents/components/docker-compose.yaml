@@ -8,6 +8,7 @@ services:
     volumes:
       - group-project:/var/lib/postgresql/data
       - ./init_data:/docker-entrypoint-initdb.d
+      - recitation-14-team-01-spotlight:/var/lib/postgresql/data
   web:
     image: node:lts
     user: 'node'
