@@ -15,8 +15,8 @@ CREATE TABLE videos(
 
 DROP TABLE IF EXISTS tags CASCADE;
 CREATE TABLE tags(
-    tag_id SERIAL SERIAL PRIMARY KEY NOT NULL,
-    tag VARCHAR(20),
+    tag_id SERIAL PRIMARY KEY NOT NULL,
+    tag VARCHAR(20)
 );
 
 DROP TABLE IF EXISTS users_to_videos CASCADE;
@@ -24,13 +24,13 @@ CREATE TABLE users_to_videos(
     username VARCHAR(50),
     movie_id INT,
     FOREIGN KEY (username) REFERENCES users (username),
-    FOREIGN KEY (movie_id) REFERENCES videos (video_id),
+    FOREIGN KEY (movie_id) REFERENCES videos (video_id)
 );
 
 DROP TABLE IF EXISTS videos_to_tags CASCADE;
-CREATE TABLE users_to_videos(
+CREATE TABLE videos_to_tags(
     video_id INT,
     tag_id INT,
     FOREIGN KEY (video_id) REFERENCES videos (video_id),
-    FOREIGN KEY (tag_id) REFERENCES tags (tag_id),
+    FOREIGN KEY (tag_id) REFERENCES tags (tag_id)
 );
