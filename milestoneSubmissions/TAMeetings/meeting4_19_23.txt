@@ -1,0 +1,6 @@
+TA meeting:
+So far we have set up a functioning website and login page and merged in database code
+Need to add epics, user acceptance criteria, and other labels onto user stories in project board (lab 4)
+Need to add release notes for each week before TA meeting (can be automated)
+Everyone's commits/progress were satisfactory
+At next meeting, have everything merged together to show one merged and functional program
