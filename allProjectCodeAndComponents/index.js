@@ -58,26 +58,6 @@ app.use(
 );
 
 
-// // Authentication Middleware.
-// const auth = (req, res, next) => {
-//   if (!req.session.user) {
-//     // Default to login page.
-//     return res.redirect('/login');
-//   }
-//   next();
-// };
-
-// // Authentication Required
-// app.use(auth);
-
-
-
-
-
-
-
-
-
 // *****************************************************
 // <!-- Section 4 : API Routes -->
 // *****************************************************
@@ -91,12 +71,15 @@ app.use(
 // default rout
 
 app.get('/', (req, res) => {
-    res.redirect('/login');
+    res.redirect('/welcome');
 });
 
 
 
-
+app.get('/welcome', (req,res)=>
+{
+  res.render('pages/welcome.ejs')
+})
 
 
 // "register" page routs
@@ -125,7 +108,7 @@ app.post('/register', async (req, res) => {
         res.redirect('/login');
     })
     .catch(err => {
-        console.log('Fs in the chat');
+        console.log('Registration failed');
         console.log(err);
         res.redirect('/register');
     });
@@ -161,7 +144,8 @@ app.post('/login', (req, res) => {
         if(match){
             req.session.user = user;
             req.session.save();
-            res.redirect('/home');
+            res.redirect('/', { user: req.session.user });
+            console.log('User Login Successful')
         }else{
             //throw Error("Incorrect username or password");
             console.log("Incorrect username or password")
@@ -191,19 +175,19 @@ app.post('/login', (req, res) => {
 
 
 
-// Authentication Middleware
+// // Authentication Middleware
 
-const auth = (req, res, next) => {
-  if (!req.session.user) {
-    // Default to login page.
-    return res.redirect('/login');
+// const auth = (req, res, next) => {
+//   if (!req.session.user) {
+//     // Default to login page.
+//     return res.redirect('/login');
     
-  }
-  next();
-};
+//   }
+//   next();
+// };
 
-// Authentication Required
-app.use(auth);
+// // Authentication Required
+// app.use(auth);
 
 
 
@@ -217,7 +201,7 @@ app.use(auth);
 // "home" page routs
 
 app.get('/home', (req, res) => {
-    res.render("pages/home");
+    res.render("pages/home.ejs");
 });
 
 
@@ -232,7 +216,7 @@ app.get('/home', (req, res) => {
 // "pastVideos" page routs
 
 app.get('/pastVideos', (req, res) => {
-  res.render("pages/pastVideos");
+  res.render("pages/pastVideos.ejs");
 });
 
 
@@ -242,8 +226,9 @@ app.get('/pastVideos', (req, res) => {
 // logout routs
 
 app.get("/logout", (req, res) => {
+  console.log("User logged out successfully")
   req.session.destroy();
-  res.render("pages/login", {
+  res.render("pages/login.ejs", {
     message: 'logged out successfully',
   });
 });
