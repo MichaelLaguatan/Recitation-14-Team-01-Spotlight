@@ -1,7 +1,6 @@
 // *****************************************************
 // <!-- Section 1 : Import Dependencies -->
 // *****************************************************
-
 const express = require('express'); // To build an application server or API
 const app = express();
 const pgp = require('pg-promise')(); // To connect to the Postgres DB from the node server
@@ -94,7 +93,7 @@ app.get('/welcome', (req,res)=>
 })
 
 
-// "register" page routs
+// "register" page routes
 app.get('/register', (req, res) => {
     res.render('pages/register');
 });
@@ -235,13 +234,15 @@ app.get('/test', (req, res)=> {
   testAdd();
 })
 
-// "login" page routs
+// "login" page routes
 app.get('/login', (req, res) => {
     res.render("pages/login");
+    //res.json({status: 'success', message: 'Logged in successfully'});
 });
 
-app.post('/login', (req, res) => {
 
+
+app.post('/login', (req, res) => {
     var username = req.body.username;
 
     db.one(`SELECT * FROM users WHERE username='${username}' LIMIT 1;`)
@@ -269,12 +270,12 @@ app.post('/login', (req, res) => {
     });
 });
 
-// "home" page routs
+// "home" page routes
 app.get('/home', (req, res) => {
     res.render("pages/home.ejs");
 });
 
-// "pastVideos" page routs
+// "pastVideos" page routes
 app.get('/pastVideos', (req, res) => {
   res.render("pages/pastVideos.ejs");
 });
@@ -286,14 +287,14 @@ app.get('/profile', (req, res) => {
 
 app.post('/usernameChange', (req, res) => {
   const username = req.body.username;
-  const query = `update users set username = '${username}' where username = '${user.username}';`;
+  const query = `update users set username = '${username}' where username = '${userData.username}';`;
   db.any(query)
   .then(data => {
     userData.username = username;
     res.render("pages/profile", {message: 'username changed succesfully', user: userData});
   })
   .catch(err => {
-    res.render("pages/profile", {message: 'username changed succesfully', user: userData});
+    res.render("pages/profile", {message: 'username change failed', user: userData});
   });
 });
 
@@ -309,8 +310,7 @@ app.post('/passwordChange', async (req, res) => {
   });
 });
 
-// logout routs
-
+// logout routes
 app.get("/logout", (req, res) => {
   console.log("User logged out successfully")
   req.session.destroy();
@@ -319,9 +319,14 @@ app.get("/logout", (req, res) => {
   });
 });
 
+//Lab11 unit testing route
+app.get('/welcometest', (req, res) => {
+  res.json({status: 'success', message: 'Welcome!'});
+});
+
 // *****************************************************
-// <!-- Section 5 : Start Server-->
+// <!-- Section 6 : Start Server-->
 // *****************************************************
 // starting the server and keeping the connection open to listen for more requests
-app.listen(3000);
+module.exports = app.listen(3000);
 console.log('Server is listening on port 3000');
