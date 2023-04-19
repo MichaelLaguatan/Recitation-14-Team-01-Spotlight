@@ -1,14 +1,9 @@
 const express = require('express'); // To build an application server or API
 const app = express();
 
-app.get('/welcome', (req, res) => {
-  res.json({status: 'success', message: 'Welcome!'});
-});
-
-
-// // *****************************************************
-// // <!-- Section 1 : Import Dependencies -->
-// // *****************************************************
+// *****************************************************
+// <!-- Section 1 : Import Dependencies -->
+// *****************************************************
 
 const pgp = require('pg-promise')(); // To connect to the Postgres DB from the node server
 const bodyParser = require('body-parser');
@@ -18,9 +13,9 @@ const axios = require('axios'); // To make HTTP requests from our server. We'll 
 const { queryResult } = require('pg-promise');
 const json = require('body-parser/lib/types/json');
 
-// // *****************************************************
-// // <!-- Section 2 : Connect to DB -->
-// // *****************************************************
+// *****************************************************
+// <!-- Section 2 : Connect to DB -->
+// *****************************************************
 
 // database configuration
 const dbConfig = {
@@ -43,9 +38,9 @@ db.connect()
     console.log('ERROR:', error.message || error);
   });
 
-// // *****************************************************
-// // <!-- Section 3 : App Settings -->
-// // *****************************************************
+// *****************************************************
+// <!-- Section 3 : App Settings -->
+// *****************************************************
 
 app.set('view engine', 'ejs'); // set the view engine to EJS
 app.use(bodyParser.json()); // specify the usage of JSON for parsing request body.
