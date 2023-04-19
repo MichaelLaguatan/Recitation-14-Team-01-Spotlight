@@ -229,40 +229,6 @@ app.get('/pastVideos', (req, res) => {
   res.render("pages/pastVideos");
 });
 
-// "profile" page routes
-app.get('/profile', (req, res) => {
-  res.render("pages/profile", {user: userData});
-});
-
-app.post('/usernameChange', (req, res) => {
-  const username = req.body.username;
-  const query = `update users set username = '${username}' where username = '${user.username}';`;
-  db.any(query)
-  .then(data => {
-    userData.username = username;
-    res.render("pages/profile", {message: 'username changed succesfully', user: userData});
-  })
-  .catch(err => {
-    res.render("pages/profile", {message: 'username changed succesfully', user: userData});
-  });
-});
-
-app.post('/passwordChange', async (req, res) => {
-  const hash = await bcrypt.hash(req.body.newPassword, 10);
-  const query = `update users set password = '${hash}' where username = '${userData.username}';`;
-  db.any(query)
-  .then(data => {
-    res.render("pages/profile", {message: 'Password changed succesfully', user: userData});
-  })
-  .catch(err => {
-    res.render("pages/profile", {message: 'Password changed failed', user: userData});
-  });
-});
-
-
-
-
-
 // logout routs
 
 app.get("/logout", (req, res) => {

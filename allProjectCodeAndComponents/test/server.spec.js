@@ -34,39 +34,51 @@ describe('Server!', () => {
 
 //test register to be able to test /login correctly later
 it('positive : /register', done => {
-    chai
-      .request(server)
-      .post('/register')
-      .send({username: "John Doe", password: "coolPassword"})
-      .end((err, res) => {
-        expect(res).to.have.status(200);
-        expect(res).to.redirect;
-        done();
-      });
-  });
-
-  it('positive : /login', done => {
-    chai
-      .request(server)
-      .post('/login')
-      .send({username: "John Doe", password: "coolPassword"})
-      .end((err, res) => {
-        expect(res).to.have.status(200);
-        expect(res).to.redirect;
-        done();
-      });
-  });
-
-  it('negative : /login', done => {
   chai
     .request(server)
-    .post('/login')
-    .send({username: "John Doe", password: "badPassword"})
+    .post('/register')
+    .send({username: "John Doe", password: "coolPassword"})
     .end((err, res) => {
       expect(res).to.have.status(200);
       expect(res).to.redirect;
       done();
     });
+});
+//not able to register since it is the same username/primary key
+it('negative : /register', done => {
+chai
+  .request(server)
+  .post('/register')
+  .send({username: "John Doe", password: "coolPassword"})
+  .end((err, res) => {
+    expect(res).to.have.status(200);
+    expect(res).to.redirect;
+    done();
+  });
+});
+
+it('positive : /login', done => {
+  chai
+    .request(server)
+    .post('/login')
+    .send({username: "John Doe", password: "coolPassword"})
+    .end((err, res) => {
+      expect(res).to.have.status(200);
+      expect(res).to.redirect;
+      done();
+    });
+});
+
+it('negative : /login', done => {
+chai
+  .request(server)
+  .post('/login')
+  .send({username: "John Doe", password: "badPassword"})
+  .end((err, res) => {
+    expect(res).to.have.status(200);
+    expect(res).to.redirect;
+    done();
+  });
 });
 
 
