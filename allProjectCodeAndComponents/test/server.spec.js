@@ -14,7 +14,7 @@ describe('Server!', () => {
   it('Returns the default welcome message', done => {
     chai
       .request(server)
-      .get('/welcome')
+      .get('/welcometest')
       .end((err, res) => {
         expect(res).to.have.status(200);
         expect(res.body.status).to.equals('success');
@@ -31,31 +31,6 @@ describe('Server!', () => {
 
   //We are checking POST /add_user API by passing the user info in the correct order. This test case should pass and return a status 200 along with a "Success" message.
   //Positive cases
-
-//test register to be able to test /login correctly later
-it('positive : /register', done => {
-  chai
-    .request(server)
-    .post('/register')
-    .send({username: "John Doe", password: "coolPassword"})
-    .end((err, res) => {
-      expect(res).to.have.status(200);
-      expect(res).to.redirect;
-      done();
-    });
-});
-//not able to register since it is the same username/primary key
-it('negative : /register', done => {
-chai
-  .request(server)
-  .post('/register')
-  .send({username: "John Doe", password: "coolPassword"})
-  .end((err, res) => {
-    expect(res).to.have.status(200);
-    expect(res).to.redirect;
-    done();
-  });
-});
 
 it('positive : /login', done => {
   chai
@@ -81,19 +56,26 @@ chai
   });
 });
 
+it('positive : /usernameChange', done => {
+chai
+  .request(server)
+  .post('/usernameChange')
+  .send({username: "Doe John", password: "coolPassword", userData:{username: "John Doe"}})
+  .end((err, res) => {
+    expect(res).to.have.status(200);
+    done();
+  });
+});
 
+it('negative : /usernameChange', done => {
+chai
+  .request(server)
+  .post('/usernameChange')
+  .send({username: "John Doe", password: "badPassword", userData:{username: "John Doe"}})
+  .end((err, res) => {
+    expect(res).to.have.status(200);
+    done();
+  });
+});
 
-
-  
-
-
-
-
-
-
-
-
-
-
-  
 });

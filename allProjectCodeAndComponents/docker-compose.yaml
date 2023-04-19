@@ -6,7 +6,6 @@ services:
     expose:
       - '5432'
     volumes:
-      - group-project:/var/lib/postgresql/data
       - ./init_data:/docker-entrypoint-initdb.d
       - recitation-14-team-01-spotlight:/var/lib/postgresql/data
   web:
@@ -28,4 +27,4 @@ services:
 # run `docker-compose rm -v`. Note that this will remove ALL of your data, so
 # be extra sure you've made a stable backup somewhere.
 volumes:
-  group-project:
+  recitation-14-team-01-spotlight:

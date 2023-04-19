@@ -289,14 +289,14 @@ app.get('/profile', (req, res) => {
 
 app.post('/usernameChange', (req, res) => {
   const username = req.body.username;
-  const query = `update users set username = '${username}' where username = '${user.username}';`;
+  const query = `update users set username = '${username}' where username = '${userData.username}';`;
   db.any(query)
   .then(data => {
     userData.username = username;
     res.render("pages/profile", {message: 'username changed succesfully', user: userData});
   })
   .catch(err => {
-    res.render("pages/profile", {message: 'username changed succesfully', user: userData});
+    res.render("pages/profile", {message: 'username change failed', user: userData});
   });
 });
 
@@ -322,7 +322,7 @@ app.get("/logout", (req, res) => {
 });
 
 //Lab11 unit testing route
-app.get('/welcome', (req, res) => {
+app.get('/welcometest', (req, res) => {
   res.json({status: 'success', message: 'Welcome!'});
 });
 
