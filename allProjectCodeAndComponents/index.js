@@ -59,19 +59,29 @@ app.use(
   })
 );
 
+const userData = {
+  username: "placeholder"
+}
 
 // *****************************************************
-// <!-- Section 4 : API Routes -->
+// <!-- Section 4 : Authentication Middleware -->
+// *****************************************************
+// const auth = (req, res, next) => {
+//   if (!req.session.user) {
+//     // Default to login page.
+//     return res.redirect('/login');
+//   }
+//   next();
+// };
+
+// // Authentication Required
+// app.use(auth);
+
+// *****************************************************
+// <!-- Section 5 : API Routes -->
 // *****************************************************
 
-// TODO - Include your API routes here
-
-
-
-
-
-// default rout
-
+//starting redirect
 app.get('/', (req, res) => {
     res.redirect('/welcome');
 });
@@ -85,19 +95,13 @@ app.get('/welcome', (req,res)=>
 
 
 // "register" page routs
-
 app.get('/register', (req, res) => {
     res.render('pages/register');
 });
 
 // Register
 app.post('/register', async (req, res) => {
-    //hash the password using bcrypt library
     const hash = await bcrypt.hash(req.body.password, 10);
-    
-   
-    // To-DO: Insert username and hashed password into 'users' table
-    
     var password = hash;
     var username = req.body.username;
 
@@ -232,7 +236,6 @@ app.get('/test', (req, res)=> {
 })
 
 // "login" page routs
-
 app.get('/login', (req, res) => {
     res.render("pages/login");
 });
@@ -248,6 +251,7 @@ app.post('/login', (req, res) => {
 
         if(match){
             req.session.user = user;
+            userData.username = username;
             req.session.save();
             res.redirect('/');
             console.log('User Login Successful')
@@ -265,68 +269,45 @@ app.post('/login', (req, res) => {
     });
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // Authentication Middleware
-
-// const auth = (req, res, next) => {
-//   if (!req.session.user) {
-//     // Default to login page.
-//     return res.redirect('/login');
-    
-//   }
-//   next();
-// };
-
-// // Authentication Required
-// app.use(auth);
-
-
-
-
-
-
-
-
-
-
 // "home" page routs
-
 app.get('/home', (req, res) => {
     res.render("pages/home.ejs");
 });
 
-
-
-
-
-
-
-
-
-
 // "pastVideos" page routs
-
 app.get('/pastVideos', (req, res) => {
   res.render("pages/pastVideos.ejs");
 });
 
+// "profile" page routes
+app.get('/profile', (req, res) => {
+  res.render("pages/profile", {user: userData});
+});
 
+app.post('/usernameChange', (req, res) => {
+  const username = req.body.username;
+  const query = `update users set username = '${username}' where username = '${user.username}';`;
+  db.any(query)
+  .then(data => {
+    userData.username = username;
+    res.render("pages/profile", {message: 'username changed succesfully', user: userData});
+  })
+  .catch(err => {
+    res.render("pages/profile", {message: 'username changed succesfully', user: userData});
+  });
+});
 
-
+app.post('/passwordChange', async (req, res) => {
+  const hash = await bcrypt.hash(req.body.newPassword, 10);
+  const query = `update users set password = '${hash}' where username = '${userData.username}';`;
+  db.any(query)
+  .then(data => {
+    res.render("pages/profile", {message: 'Password changed succesfully', user: userData});
+  })
+  .catch(err => {
+    res.render("pages/profile", {message: 'Password changed failed', user: userData});
+  });
+});
 
 // logout routs
 
@@ -337,22 +318,6 @@ app.get("/logout", (req, res) => {
     message: 'logged out successfully',
   });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
