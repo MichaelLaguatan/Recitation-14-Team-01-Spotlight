@@ -1,0 +1,43 @@
+Feature 1: The search bar allows the user to search multiple API results using keywords and tags
+    Test Cases:
+        -User should be able to copy and paste in textbar
+        -The website should display search tips if the search returned no videos
+        -The website should correctly display any returned videos from search
+    Test Data / Results:
+        -Yes or No: user is able to copy and paste into textbar
+        -Yes or No: website displays correct search tips screen if no returned videos
+        -Rating: does user find the search tips helpful?
+        -Rating: was any part of the function/process confusing or unintuitive for the user?
+    Test Environment: The test should be carried out in an environment where the website is most likely to be used, i.e. at home
+    Testee information:
+        -Range of ages and technological abilities to fully test ease of use
+        -Preferably someone who enjoys the type of content provided
+
+Feature 2: Settings page for users to change their username for customizability and their password for security
+    Test Cases:
+        -User should be able to change their username and/or password
+        -Database error warning should show that someone else already has that username/primary key
+    Test Data:
+        -Yes or No: user is able to change username
+        -Yes or No: user is able to change password
+        -Yes or No: Error warning is displayed telling the user that someone else already has that username
+        Rating: was any part of the function/process confusing or unintuitive for the user?
+    Test Environment: The test should be carried out in an environment where the website is most likely to be used, i.e. at home
+    Testee information:
+        -Range of ages and technological abilities to fully test ease of use
+        -Preferably someone who enjoys the type of content provided
+
+Feature 3: Past videos page for users to reference videos watched in the past
+    Test Cases:
+        -User should be able to view a list of watched videos
+        -User can delete videos from watch history
+        -User should be able to click on a video from list to rewatch
+    Test Data:
+        -Yes or No: page correctly displays history of watched videos
+        -Yes or No: user is able to delete videos from watch history which are then deleted from table in database
+        -Yes or No: clicking on a video allows the user to rewatch the video
+        -Rating: was any part of the function/process confusing or unintuitive for the user?
+    Test Environment: The test should be carried out in an environment where the website is most likely to be used, i.e. at home
+    Testee information:
+        -Range of ages and technological abilities to fully test ease of use
+        -Preferably someone who enjoys the type of content provided
