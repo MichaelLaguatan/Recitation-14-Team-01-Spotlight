@@ -40,6 +40,7 @@ it('positive : /register', done => {
       .send({username: "John Doe", password: "coolPassword"})
       .end((err, res) => {
         expect(res).to.have.status(200);
+        expect(res).to.redirect;
         done();
       });
   });
@@ -51,9 +52,22 @@ it('positive : /register', done => {
       .send({username: "John Doe", password: "coolPassword"})
       .end((err, res) => {
         expect(res).to.have.status(200);
+        expect(res).to.redirect;
         done();
       });
   });
+
+  it('negative : /login', done => {
+  chai
+    .request(server)
+    .post('/login')
+    .send({username: "John Doe", password: "badPassword"})
+    .end((err, res) => {
+      expect(res).to.have.status(200);
+      expect(res).to.redirect;
+      done();
+    });
+});
 
 
 

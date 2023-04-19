@@ -132,7 +132,6 @@ app.post('/register', async (req, res) => {
     })
     .catch(err => {
         console.log('Fs in the chat');
-        console.log(err);
         res.redirect('/register');
     });
 });
@@ -169,6 +168,7 @@ app.post('/login', (req, res) => {
         if(match){
             req.session.user = user;
             req.session.save();
+            console.log("Logged in successfully");
             res.redirect('/home');
         }else{
             //throw Error("Incorrect username or password");
