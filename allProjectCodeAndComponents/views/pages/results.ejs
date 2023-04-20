@@ -14,10 +14,9 @@
     <ul>
         <% for(var i = 0; i < result.length; i++) { %>
           <li>
-            <h2><%= result[i].snippet.title %></h2>
-            <p><%= result[i].snippet.description %></p>
-            <a href="https://www.youtube.com/watch?v=<%= result[i].id.videoId %>">Watch on YouTube</a>
-            <iframe  src="https://www.youtube.com/embed/<%= result[i].id.videoId %>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            <h2><%= result[i].title %></h2>
+            <p><%= result[i].description %></p>
+           
           </li>
         <% } %>
     </ul>

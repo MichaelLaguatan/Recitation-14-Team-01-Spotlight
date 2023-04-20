@@ -184,10 +184,9 @@ app.get('/test', (req, res) => {
 });
 
 
-app.get('/results', (req, res) => {
+async function queryYoutube(query) {
   const API_KEY = 'AIzaSyAUIeq5EabysWpUAIREp5MdMfyydzVoiQk';
   const SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search';
-  var query = "js tutorial"
   
   const params = {
     q: query,
@@ -197,15 +196,84 @@ app.get('/results', (req, res) => {
 };
 
 const url = SEARCH_URL + '?' + new URLSearchParams(params);
-
-fetch(url)
+let result;
+await fetch(url)
     .then(response => response.json())
     .then(data => {
-    console.log(data.items);
-    let result = data.items; 
-    res.render('pages/results', { result });
+     result = data.items; 
+    
     })
     .catch(error => console.error(error));
+  return result; 
+}
+
+async function queryVimeo(query) {
+  const accessToken = '6205e05dd3f7a3481af13e0de55e9025'; 
+  const searchTerm = query;  // change this to your search term
+  const clientId = 'YOUR_CLIENT_ID';
+  const clientSecret = 'YOUR_CLIENT_SECRET';
+  const apiUrl = `https://api.vimeo.com/videos?query=${searchTerm}`;
+  const headers = {
+    Authorization: `bearer ${accessToken}`
+  };
+  let ret; 
+  await fetch(apiUrl, {
+    method: 'GET',
+    headers,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      ret = data.data; 
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+    return ret;
+}
+
+async function queryAllstandard(query) {
+
+  var youtuberesult = await queryYoutube(query).then((res) => {return res}); 
+  console.log(youtuberesult)
+  var vimeoresults = await queryVimeo(query).then((res) => {return res}); 
+  console.log(vimeoresults)
+  var combined = []
+  //{"title":"","description":"","platform":"","url":"","id":""}
+  var count = 0; 
+  for(let x =0; x< youtuberesult.length; x++) {
+   let turl = "https://www.youtube.com/watch?v=" + youtuberesult[x].id.videoId
+   combined.push({ 
+       "title" : youtuberesult[x].snippet.title,
+       "description": youtuberesult[x].snippet.description,
+       "platform": "youtube",
+       "url": turl, 
+       "id": youtuberesult[x].id.videoId
+   });
+  }
+  for(let y =0; y< vimeoresults.length; y++) {
+   combined.push({ 
+       "title" : vimeoresults[y].name,
+       "description": vimeoresults[y].description,
+       "platform": "vimeo",
+       "url": vimeoresults[y].link, 
+       "id": vimeoresults[y].uri
+   });
+  }
+   return combined; 
+}
+
+ 
+app.get('/results', (req, res) => {
+  // res.render('pages/results', { result });
+
+  queryAllstandard('hi').then((result) => {
+    console.log(result)
+    res.render('pages/results', { result });
+
+  })
+
+
+  
 });
 
 
