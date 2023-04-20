@@ -272,7 +272,7 @@ app.get('/test', (req, res) => {
   res.render("pages/test");
 });
 
-
+//returns a promise to the data that youtube returns must use async for this one 
 async function queryYoutube(query) {
   const API_KEY = 'AIzaSyAUIeq5EabysWpUAIREp5MdMfyydzVoiQk';
   const SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search';
@@ -295,7 +295,7 @@ await fetch(url)
     .catch(error => console.error(error));
   return result; 
 }
-
+//returns a promise to the data that vimeo returns must use async for this one 
 async function queryVimeo(query) {
   const accessToken = '6205e05dd3f7a3481af13e0de55e9025'; 
   const searchTerm = query;  // change this to your search term
@@ -319,7 +319,8 @@ async function queryVimeo(query) {
     });
     return ret;
 }
-
+// returns all data from all websites in a standard form as seen below 
+//{"title":"","description":"","platform":"","url":"","id":""}
 async function queryAllstandard(query) {
 
   var youtuberesult = await queryYoutube(query).then((res) => {return res}); 
@@ -327,7 +328,7 @@ async function queryAllstandard(query) {
   var vimeoresults = await queryVimeo(query).then((res) => {return res}); 
   console.log(vimeoresults)
   var combined = []
-  //{"title":"","description":"","platform":"","url":"","id":""}
+  
   var count = 0; 
   for(let x =0; x< youtuberesult.length; x++) {
    let turl = "https://www.youtube.com/watch?v=" + youtuberesult[x].id.videoId
@@ -395,9 +396,25 @@ app.get('/results', (req, res) => {
 // youtube works 
 
 // "home" page routs
+app.post('/home', (req, res) => {
+  console.log(req.body)
+  if(req.body.q != undefined && req.body.q != "" && req.body.q != " ") {
+    console.log("searching hear ")
+    queryAllstandard(req.body.q).then((result) => {
+      res.render('pages/home', { result });
+  
+    })
+  } else {
+    console.log("not defined")
+    let result = []; 
+    res.render('pages/home', { result });
+  }
 
+
+})
 app.get('/home', (req, res) => {
-    res.render("pages/home.ejs");
+  let result = []; 
+    res.render("pages/home.ejs",{result});
 });
 
 
