@@ -144,7 +144,7 @@ app.post('/login', (req, res) => {
         if(match){
             req.session.user = user;
             req.session.save();
-            res.redirect('/', { user: req.session.user });
+            res.redirect('/');
             console.log('User Login Successful')
         }else{
             //throw Error("Incorrect username or password");
