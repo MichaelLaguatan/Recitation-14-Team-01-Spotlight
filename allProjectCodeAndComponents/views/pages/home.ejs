@@ -29,7 +29,7 @@
               <h5 class="card-title"><%= result[i].title %></h5>
               <p class="card-text"><%= result[i].description %></p>
               <form action="/details" method = "POST">
-              <button type="button" data-button="<% result[i] %>">
+              <button type="button" class="btn btn-primary" data-button="<% result[i] %>">
                 Launch modal
               </button>
             </form>
