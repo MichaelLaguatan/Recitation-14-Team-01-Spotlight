@@ -127,28 +127,27 @@ app.post('/register', async (req, res) => {
   when given a username.
 */
 function queryAccountVideos(username){
-  var output;
+  var output = [];
   var query = `
   SELECT 
     videos.video_id, 
     videos.title, 
     videos.release, 
     videos.views, 
-    videos.url  
+    videos.link  
   FROM users_to_videos 
   FULL JOIN videos 
   ON users_to_videos.video_id = videos.video_id 
   WHERE users_to_videos.username = '${username}';`
   db.any(query)
     .then(function(data){ 
-      output = data; 
-      return;
+      output = data;
     })
     .catch(function(err){
       output = null;
       return console.log(err + " (Vincent did a goofy D:)");
     });
-  return output;
+    return output;
 }
 
 /*
@@ -464,6 +463,28 @@ app.get("/logout", (req, res) => {
   res.render("pages/login.ejs", {
     message: 'logged out successfully',
   });
+});
+
+//PastVideos routes
+app.get('/pastVideos', async (req, res) => {
+  var query = `
+  SELECT 
+    videos.video_id, 
+    videos.title, 
+    videos.release, 
+    videos.views, 
+    videos.link  
+  FROM users_to_videos 
+  FULL JOIN videos 
+  ON users_to_videos.video_id = videos.video_id 
+  WHERE users_to_videos.username = '${userData.username}';`
+  db.any(query)
+    .then(videos => { 
+      res.render('pages/pastVideos', {videos});
+    })
+    .catch(err =>{
+      res.render('pages/pastVideos', {videos: []});
+    });
 });
 
 //Lab11 unit testing route
