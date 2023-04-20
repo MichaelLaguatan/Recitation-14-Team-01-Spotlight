@@ -1,7 +1,6 @@
 // *****************************************************
 // <!-- Section 1 : Import Dependencies -->
 // *****************************************************
-
 const express = require('express'); // To build an application server or API
 const app = express();
 const pgp = require('pg-promise')(); // To connect to the Postgres DB from the node server
@@ -59,19 +58,29 @@ app.use(
   })
 );
 
+const userData = {
+  username: "placeholder"
+}
 
 // *****************************************************
-// <!-- Section 4 : API Routes -->
+// <!-- Section 4 : Authentication Middleware -->
+// *****************************************************
+// const auth = (req, res, next) => {
+//   if (!req.session.user) {
+//     // Default to login page.
+//     return res.redirect('/login');
+//   }
+//   next();
+// };
+
+// // Authentication Required
+// app.use(auth);
+
+// *****************************************************
+// <!-- Section 5 : API Routes -->
 // *****************************************************
 
-// TODO - Include your API routes here
-
-
-
-
-
-// default rout
-
+//starting redirect
 app.get('/', (req, res) => {
     res.redirect('/welcome');
 });
@@ -84,20 +93,14 @@ app.get('/welcome', (req,res)=>
 })
 
 
-// "register" page routs
-
+// "register" page routes
 app.get('/register', (req, res) => {
     res.render('pages/register');
 });
 
 // Register
 app.post('/register', async (req, res) => {
-    //hash the password using bcrypt library
     const hash = await bcrypt.hash(req.body.password, 10);
-    
-   
-    // To-DO: Insert username and hashed password into 'users' table
-    
     var password = hash;
     var username = req.body.username;
 
@@ -231,14 +234,15 @@ app.get('/test', (req, res)=> {
   testAdd();
 })
 
-// "login" page routs
-
+// "login" page routes
 app.get('/login', (req, res) => {
     res.render("pages/login");
+    //res.json({status: 'success', message: 'Logged in successfully'});
 });
 
-app.post('/login', (req, res) => {
 
+
+app.post('/login', (req, res) => {
     var username = req.body.username;
 
     db.one(`SELECT * FROM users WHERE username='${username}' LIMIT 1;`)
@@ -248,8 +252,9 @@ app.post('/login', (req, res) => {
 
         if(match){
             req.session.user = user;
+            userData.username = username;
             req.session.save();
-            res.redirect('/', { user: req.session.user });
+            res.redirect('/');
             console.log('User Login Successful')
         }else{
             //throw Error("Incorrect username or password");
@@ -417,27 +422,42 @@ app.get('/home', (req, res) => {
     res.render("pages/home.ejs",{result});
 });
 
-
-
-
-
-
-
-
-
-
-// "pastVideos" page routs
-
+// "pastVideos" page routes
 app.get('/pastVideos', (req, res) => {
   res.render("pages/pastVideos.ejs");
 });
 
+// "profile" page routes
+app.get('/profile', (req, res) => {
+  res.render("pages/profile", {user: userData});
+});
 
+app.post('/usernameChange', (req, res) => {
+  const username = req.body.username;
+  const query = `update users set username = '${username}' where username = '${userData.username}';`;
+  db.any(query)
+  .then(data => {
+    userData.username = username;
+    res.render("pages/profile", {message: 'username changed succesfully', user: userData});
+  })
+  .catch(err => {
+    res.render("pages/profile", {message: 'username change failed', user: userData});
+  });
+});
 
+app.post('/passwordChange', async (req, res) => {
+  const hash = await bcrypt.hash(req.body.newPassword, 10);
+  const query = `update users set password = '${hash}' where username = '${userData.username}';`;
+  db.any(query)
+  .then(data => {
+    res.render("pages/profile", {message: 'Password changed succesfully', user: userData});
+  })
+  .catch(err => {
+    res.render("pages/profile", {message: 'Password changed failed', user: userData});
+  });
+});
 
-
-// logout routs
-
+// logout routes
 app.get("/logout", (req, res) => {
   console.log("User logged out successfully")
   req.session.destroy();
@@ -446,25 +466,14 @@ app.get("/logout", (req, res) => {
   });
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//Lab11 unit testing route
+app.get('/welcometest', (req, res) => {
+  res.json({status: 'success', message: 'Welcome!'});
+});
 
 // *****************************************************
-// <!-- Section 5 : Start Server-->
+// <!-- Section 6 : Start Server-->
 // *****************************************************
 // starting the server and keeping the connection open to listen for more requests
-app.listen(3000);
+module.exports = app.listen(3000);
 console.log('Server is listening on port 3000');
