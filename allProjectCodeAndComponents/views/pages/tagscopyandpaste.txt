@@ -1,0 +1,18 @@
+    <!--
+    <table>
+      <thead>
+        <tr>
+          <th>Tag Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% tags.forEach(function(tag) { %>
+          <tr>
+            <td><%= tag.name %></td>
+            <td><%= tag.description %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table> 
+    -->
