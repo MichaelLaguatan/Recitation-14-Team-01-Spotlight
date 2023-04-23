@@ -11,6 +11,11 @@ const axios = require('axios'); // To make HTTP requests from our server. We'll 
 const { queryResult } = require('pg-promise');
 const json = require('body-parser/lib/types/json');
 
+
+
+
+
+
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
 // *****************************************************
@@ -115,7 +120,10 @@ app.post('/register', async (req, res) => {
     .catch(err => {
         console.log('Registration failed');
         console.log(err);
-        res.redirect('/register');
+        res.render('pages/register.ejs', {message: 'An account with that username already exists.'});
+//         res.render("pages/login.ejs", {
+// message: 'Wrong password, please try again',
+//         });
     });
 });
 
@@ -259,23 +267,24 @@ app.post('/login', (req, res) => {
         }else{
             //throw Error("Incorrect username or password");
             console.log("Incorrect username or password")
-            res.redirect('/login');
+            res.render("pages/login.ejs", {
+              message: 'Wrong password, please try again',
+            });
         }
        
 
     })
     .catch(err => {
         console.log(err);
-        res.redirect('/register');
+        res.render("pages/register.ejs", {
+          message: 'User does not exist.',
+        });
     });
 });
 
 
 
 
-app.get('/test', (req, res) => {
-  res.render("pages/test");
-});
 
 //returns a promise to the data that youtube returns must use async for this one 
 async function queryYoutube(query) {
@@ -366,37 +375,24 @@ app.get('/results', (req, res) => {
     res.render('pages/results', { result });
 
   })
-
-
-  
 });
 
 
 
+// sample code for how to check if a user exists or not 
 
-
-
-
-// // Authentication Middleware
-
-// const auth = (req, res, next) => {
-//   if (!req.session.user) {
-//     // Default to login page.
-//     return res.redirect('/login');
-    
+// app.get('/usertest', (req, res) => 
+// {
+//   const userExists = req.session.user;
+//   if(userExists)
+//   {
+//     res.render("pages/test.ejs");
 //   }
-//   next();
-// };
-
-// // Authentication Required
-// app.use(auth);
-
-
-
-
-
-
-
+//   else
+//   {
+//     res.redirect('/pastVideos');
+//   }
+// });
 
 // youtube works 
 
@@ -416,7 +412,8 @@ app.post('/home', (req, res) => {
   }
 
 
-})
+
+});
 app.get('/home', (req, res) => {
   let result = []; 
     res.render("pages/home.ejs",{result});
@@ -424,12 +421,31 @@ app.get('/home', (req, res) => {
 
 // "pastVideos" page routes
 app.get('/pastVideos', (req, res) => {
-  res.render("pages/pastVideos.ejs");
+  const userExists = req.session.user;
+  if(!userExists)
+  {
+    res.render("pages/login.ejs", {
+      message: 'Please login or register to access past videos',
+    });
+  }
+  else
+  {
+    res.render("pages/pastVideos.ejs");
+  }
 });
 
 // "profile" page routes
 app.get('/profile', (req, res) => {
-  res.render("pages/profile", {user: userData});
+  const userExists = req.session.user;
+  if(!userExists)
+  {
+    res.render("pages/login.ejs", {
+      message: 'Please login or register to access your profile',
+    });  }
+  else
+  {
+    res.render("pages/profile", {user: userData});
+  }
 });
 
 app.post('/usernameChange', (req, res) => {

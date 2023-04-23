@@ -1,31 +1,32 @@
 <%- include ('../partials/header') %>
+<head>
+  
+  <main>
+    <div class="container">
 
-<main>
-  <div class="container">
-
-    <div class="col"><%- include ('../partials/message') %></div>
-    <h2>Welcome Home</h2>
-    <form action="/home" method="POST">
-      <input type="search" id="query" name="q" placeholder="Find Creative videos...">
-      <button>Search</button>
-    </form>
-    <h5>Video results displayed below...</h5>
-    <ul>
-        <% for(var i = 0; i < result.length; i++) { %>
-          <li>
-            <h2><%= result[i].title %></h2>
-            <p><%= result[i].description %></p>
-            <% if(result[i].platform == 'youtube') {%>
-            <a href="https://www.youtube.com/watch?v=<%= result[i].id %>">Watch on YouTube</a>
-            <iframe  src="https://www.youtube.com/embed/<%= result[i].id %>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-            <%}%>
-            <% if(result[i].platform == 'vimeo') {%>
-             
-            <%}%>
-          </li>
-        <% } %>
-    </ul>
-  </div>
-</main>
-
+      <div class="col"><%- include ('../partials/message') %></div>
+      <h2>Welcome Home</h2>
+      <form action="/home" method="POST">
+        <input type="search" id="query" name="q" placeholder="Find Creative videos...">
+        <button>Search</button>
+      </form>
+      <h5>Video results displayed below...</h5>
+      <ul>
+          <% for(var i = 0; i < result.length; i++) { %>
+            <li>
+              <h2><%= result[i].title %></h2>
+              <p><%= result[i].description %></p>
+              <% if(result[i].platform == 'youtube') {%>
+              <a href="https://www.youtube.com/watch?v=<%= result[i].id %>">Watch on YouTube</a>
+              <iframe  src="https://www.youtube.com/embed/<%= result[i].id %>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+              <%}%>
+              <% if(result[i].platform == 'vimeo') {%>
+              
+              <%}%>
+            </li>
+          <% } %>
+      </ul>
+    </div>
+  </main>
+</head>
 <%- include ('../partials/footer') %>
