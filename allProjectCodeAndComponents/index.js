@@ -435,7 +435,9 @@ app.get("/logout", (req, res) => {
 
 //PastVideos routes
 app.get('/pastVideos', (req, res) => {
-  var query = `SELECT * FROM videos FULL JOIN users_to_videos ON users_to_videos.movie_id = videos.video_id;`;
+  var query = `SELECT * FROM videos FULL JOIN users_to_videos 
+  ON users_to_videos.movie_id = videos.video_id 
+  WHERE users_to_videos.username = '${userData.username}';`;
   db.any(query)
     .then((videos) => { 
       res.render('pages/pastVideos', {videos});
