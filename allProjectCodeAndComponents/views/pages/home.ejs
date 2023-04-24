@@ -5,7 +5,7 @@
 
     <div class="col"><%- include ('../partials/message') %></div>
     
-    <form action="/home" method="POST" id = "search" data-search = "<%= JSON.stringify(result)%>">
+    <form action="/home" method="POST" id = "searchbox" data-search = "<%= JSON.stringify(result)%>">
       <input type="search" id="query" name="q" autocomplete="off" placeholder="Find Creative videos...">
 
     </form>
@@ -53,7 +53,7 @@
     
     transition: opacity linear 1s;
   }
-  #search {
+  #searchbox {
     
     top:20%; 
     width:50%; 
@@ -63,7 +63,7 @@
     transition: top 3s ease 0s; /* only transition top property */
     
   }
-  #search input {
+  #query  {
     background-color: black;
     opacity: 80%;
     text-align: left;
