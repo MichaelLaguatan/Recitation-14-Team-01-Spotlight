@@ -328,9 +328,7 @@ async function queryVimeo(query) {
 async function queryAllstandard(query) {
 
   var youtuberesult = await queryYoutube(query).then((res) => {return res}); 
-  console.log(youtuberesult)
   var vimeoresults = await queryVimeo(query).then((res) => {return res}); 
-  console.log(vimeoresults)
   var combined = []
   
   var count = 0; 
@@ -376,10 +374,9 @@ app.get('/results', (req, res) => {
 app.post('/home', (req, res) => {
   console.log(req.body)
   if(req.body.q != undefined && req.body.q != "" && req.body.q != " ") {
-    console.log("searching hear ")
     queryAllstandard(req.body.q).then((result) => {
+      console.log(result)
       res.render('pages/home', { result });
-  
     })
   } else {
     console.log("not defined")
