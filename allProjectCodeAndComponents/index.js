@@ -89,13 +89,13 @@ app.get('/', (req, res) => {
 
 app.get('/welcome', (req,res)=>
 {
-  res.render('pages/welcome.ejs')
+  res.render('pages/welcome.ejs',{page_name:"welcome"})
 })
 
 
 // "register" page routes
 app.get('/register', (req, res) => {
-    res.render('pages/register');
+    res.render('pages/register',{page_name:"register"});
 });
 
 // Register
@@ -236,7 +236,7 @@ app.get('/test', (req, res)=> {
 
 // "login" page routes
 app.get('/login', (req, res) => {
-    res.render("pages/login");
+    res.render("pages/login",{page_name:"login"});
     //res.json({status: 'success', message: 'Logged in successfully'});
 });
 
@@ -274,7 +274,7 @@ app.post('/login', (req, res) => {
 
 
 app.get('/test', (req, res) => {
-  res.render("pages/test");
+  res.render("pages/test",{page_name:"test"});
 });
 
 //returns a promise to the data that youtube returns must use async for this one 
@@ -332,25 +332,29 @@ async function queryAllstandard(query) {
   var vimeoresults = await queryVimeo(query).then((res) => {return res}); 
   var combined = []
   
-  var count = 0; 
-  for(let x =0; x< youtuberesult.length; x++) {
-   let turl = "https://www.youtube.com/watch?v=" + youtuberesult[x].id.videoId
-   combined.push({ 
-       "title" : youtuberesult[x].snippet.title,
-       "description": youtuberesult[x].snippet.description,
-       "platform": "youtube",
-       "url": turl, 
-       "id": youtuberesult[x].id.videoId
-   });
+
+  if(youtuberesult) {
+    for(let x =0; x< youtuberesult.length; x++) {
+    let turl = "https://www.youtube.com/watch?v=" + youtuberesult[x].id.videoId
+    combined.push({ 
+        "title" : youtuberesult[x].snippet.title,
+        "description": youtuberesult[x].snippet.description,
+        "platform": "youtube",
+        "url": turl, 
+        "id": youtuberesult[x].id.videoId
+    });
+    }
   }
-  for(let y =0; y< vimeoresults.length; y++) {
-   combined.push({ 
-       "title" : vimeoresults[y].name,
-       "description": vimeoresults[y].description,
-       "platform": "vimeo",
-       "url": vimeoresults[y].link, 
-       "id": vimeoresults[y].uri
-   });
+  if(vimeoresults) {
+    for(let y =0; y< vimeoresults.length; y++) {
+    combined.push({ 
+        "title" : vimeoresults[y].name,
+        "description": vimeoresults[y].description,
+        "platform": "vimeo",
+        "url": vimeoresults[y].link, 
+        "id": vimeoresults[y].uri
+    });
+    }
   }
    return combined; 
 }
@@ -391,19 +395,19 @@ app.post('/home', (req, res) => {
   if(req.body.q != undefined && req.body.q != "" && req.body.q != " ") {
     queryAllstandard(req.body.q).then((result) => {
       console.log(result)
-      res.render('pages/home', { result });
+      res.render('pages/home', { result,page_name:"home"});
     })
   } else {
     console.log("not defined")
     let result = []; 
-    res.render('pages/home', { result });
+    res.render('pages/home', { result, page_name:"home"});
   }
 
 
 })
 app.get('/home', (req, res) => {
   let result = []; 
-    res.render("pages/home.ejs",{result});
+    res.render("pages/home.ejs",{result,page_name:"home"});
 });
 
 app.post('/details', (req, res) => {
@@ -412,12 +416,12 @@ app.post('/details', (req, res) => {
 
 // "pastVideos" page routes
 app.get('/pastVideos', (req, res) => {
-  res.render("pages/pastVideos.ejs");
+  res.render("pages/pastVideos.ejs",{page_name:"history"});
 });
 
 // "profile" page routes
 app.get('/profile', (req, res) => {
-  res.render("pages/profile", {user: userData});
+  res.render("pages/profile", {user: userData,page_name:"profile"});
 });
 
 app.post('/usernameChange', (req, res) => {
@@ -426,10 +430,10 @@ app.post('/usernameChange', (req, res) => {
   db.any(query)
   .then(data => {
     userData.username = username;
-    res.render("pages/profile", {message: 'username changed succesfully', user: userData});
+    res.render("pages/profile", {message: 'username changed succesfully', user: userData,page_name:"profile"});
   })
   .catch(err => {
-    res.render("pages/profile", {message: 'username change failed', user: userData});
+    res.render("pages/profile", {message: 'username change failed', user: userData,page_name:"profile"});
   });
 });
 
@@ -438,10 +442,10 @@ app.post('/passwordChange', async (req, res) => {
   const query = `update users set password = '${hash}' where username = '${userData.username}';`;
   db.any(query)
   .then(data => {
-    res.render("pages/profile", {message: 'Password changed succesfully', user: userData});
+    res.render("pages/profile", {message: 'Password changed succesfully', user: userData,page_name:"profile"});
   })
   .catch(err => {
-    res.render("pages/profile", {message: 'Password changed failed', user: userData});
+    res.render("pages/profile", {message: 'Password changed failed', user: userData,page_name:"profile"});
   });
 });
 
@@ -451,6 +455,7 @@ app.get("/logout", (req, res) => {
   req.session.destroy();
   res.render("pages/login.ejs", {
     message: 'logged out successfully',
+    page_name:"login"
   });
 });
 
