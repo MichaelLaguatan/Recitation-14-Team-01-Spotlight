@@ -183,11 +183,11 @@ function queryVideoTags(video_id){
   Said data is (string, int, int, string)
   Furthermore, this will return the video's id.
 */
-function addVideo(title, release, views, link){
+async function addVideo(title, release, views, link){
   var query = `INSERT INTO "videos" (title, release, views, link)
   VALUES ($1, $2, $3, $4)
   RETURNING *;`;
-  db.any(query, [title, release, views, link])
+  return await db.any(query, [title, release, views, link])
     .then(function(data){
       data = data[0].video_id;
       console.log("Output: " + data);
@@ -201,33 +201,67 @@ function addVideo(title, release, views, link){
 /*
   Intended Usage:
   This function will add to both the tables "videos_to_tags" and "tags" a set of inputted data.
+  Update: The function will query "tags" before insertting, and if the tag already exists, simple associate the video with that tag.
 */
-function addTag(tag, video_id){
-  var query = `INSERT INTO tags (tag) VALUES ($1) RETURNING *;`
-  db.any(query, [tag])
-    .then(function(data){      
-      var secondQuery = `INSERT INTO videos_to_tags (video_id, tag_id) VALUES ($1, $2);`
-      db.any(secondQuery, [video_id, data[0].tag_id])
-        .then(function(){
-          return;
-        })
-        .catch(function(err){
-          return console.log(err + " (Vincent did a goofy on addTag D:)");
-        });      
+async function addTag(tag, video_id){
+  console.log("Received video_id: " + video_id);
+  var existingQuery = `SELECT tag_id FROM tags WHERE tag = $1;`
+  var secondQuery = `INSERT INTO videos_to_tags (video_id, tag_id) VALUES ($1, $2);`
+  db.any(existingQuery, [tag])
+    .then(function(data){
+      if(data[0] == null)
+      {
+        console.log("tag_id for " + [tag] + " doesn't exist");
+        var query = `INSERT INTO tags (tag) VALUES ($1) RETURNING *;`
+        db.any(query, [tag])
+          .then(function(data){      
+            db.any(secondQuery, [video_id, data[0].tag_id])
+              .then(function(){
+                return;
+              })
+              .catch(function(err){
+                return console.log(err + " (addTag secondQuery)");
+              });      
+          })
+          .catch(function(err){
+            return console.log(err + " (addTag query)");
+          });
+      }
+      else
+      {
+        console.log( tag + " exists with the id: " + data[0].tag_id);
+        db.any(secondQuery, [video_id, data[0].tag_id])
+          .then(function(){
+            return;
+          })
+          .catch(function(err){
+            return console.log(err + " (addTag secondQuery)");
+          });
+      }
     })
     .catch(function(err){
-      return console.log(err + " (Vincent did a goofy on addTag D:)");
-    });
+      return console.log(err + " (addTag existingQuery)");
+    })
+
+
+  
 }
 
 /*
   Intended Usage:
   For personal purposes, this function lets Vincent test if the add functions work where they'll later manually test the SQL to see if those work.
   docker exec -it allprojectcodeandcomponents-db-1 psql -U postgres
+  because of how the code works, the front end will need to use async/await on these function calls if they care about the output of the function.
 */
-function testAdd(){
-  addTag("Comedy", addVideo("Best Video Ever", 2023, 9001, "https://bestvideoever.com"));
-  addTag("Tragedy", addVideo("Worst Video Ever", 2023, 2, "https://worstvideoever.com"));
+async function testAdd(){
+  //either of the following implementations work.
+  
+  //this one may be better for the style of "video page" and "add tag" feature we were talking about
+  var receivedId = await addVideo("Best Video Ever", 2023, 9001, "https://bestvideoever.com");
+  addTag("Comedy", receivedId);
+
+  //this one is better if we know the tag ahead of time and just want to automagically tag stuff based on API dev's work.
+  addTag("Tragedy", await addVideo("Worst Video Ever", 2023, 2, "https://worstvideoever.com"));
 }
 
 app.get('/test', (req, res)=> {
