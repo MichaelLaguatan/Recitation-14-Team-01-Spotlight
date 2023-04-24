@@ -108,7 +108,9 @@
       <li <% if (page_name === 'profile') { %>class="active" <% } %>><a class="bi bi-person-circle" href="/profile">Profile</a></li>
       <li <% if (page_name === 'logout') { %>class="active" <% } %>><a class="bi bi-door-closed-fill" href="/logout">Logout</a></li>
       <li <% if (page_name === 'login') { %>class="active" <% } %>><a class="bi bi-door-open-fill" href="/login">Login</a></li>
+      <%- include ('../partials/search') %>
     </ul>
+    
     <style>
       @import url(https://fonts.googleapis.com/css?family=Roboto:400,500,700,300);
       *,
@@ -228,6 +230,6 @@
         }, 200);
       })
     </script>
-    <%- include ('../partials/search') %>
+    
   </body>
 </html>

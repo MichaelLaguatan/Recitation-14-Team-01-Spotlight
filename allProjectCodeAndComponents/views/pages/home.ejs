@@ -16,7 +16,7 @@
         <div class="col-md-3">
           <div class="card">
             <% if(result[i].platform == 'youtube') {%>
-              <a href="https://www.youtube.com/watch?v=<%= result[i].id %>">Watch on YouTube</a>
+              <!--<a href="https://www.youtube.com/watch?v=<%= result[i].id %>">Watch on YouTube</a>-->
               <iframe  height = "300px" src="https://www.youtube.com/embed/<%= result[i].id %>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
               <%}%>
               <% if(result[i].platform == 'vimeo') {%>
@@ -26,11 +26,10 @@
               <%}%>
             <div class="card-body">
               <h5 class="card-title"><%= result[i].title %></h5>
-              <p class="card-text"><%= result[i].description %></p>
+              <!--<p class="card-text"><%= result[i].description %></p>-->
               <form action="/details" method = "POST">
                 
-                <button  class="btn btn-primary" name = "b" value = "<%= result[i].title%>">
-                  Details
+                <button  class="btn btn-primary bi bi-ticket-detailed-fill" name = "b" value = "<%= result[i].title%>">
                 </button>
             </form>
             </div>
@@ -48,6 +47,9 @@
 
 
 <style>
+  .card {
+    border-color: transparent;
+  }
   #results {
     padding-top:10%; 
     
