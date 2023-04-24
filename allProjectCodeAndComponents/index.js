@@ -370,33 +370,6 @@ app.get('/results', (req, res) => {
   
 });
 
-
-
-
-
-
-
-// // Authentication Middleware
-
-// const auth = (req, res, next) => {
-//   if (!req.session.user) {
-//     // Default to login page.
-//     return res.redirect('/login');
-    
-//   }
-//   next();
-// };
-
-// // Authentication Required
-// app.use(auth);
-
-
-
-
-
-
-
-
 // youtube works 
 
 // "home" page routs
@@ -419,11 +392,6 @@ app.post('/home', (req, res) => {
 app.get('/home', (req, res) => {
   let result = []; 
     res.render("pages/home.ejs",{result});
-});
-
-// "pastVideos" page routes
-app.get('/pastVideos', (req, res) => {
-  res.render("pages/pastVideos.ejs");
 });
 
 // "profile" page routes
@@ -466,25 +434,15 @@ app.get("/logout", (req, res) => {
 });
 
 //PastVideos routes
-app.get('/pastVideos', async (req, res) => {
-  var query = `
-  SELECT 
-    videos.video_id, 
-    videos.title, 
-    videos.release, 
-    videos.views, 
-    videos.link  
-  FROM users_to_videos 
-  FULL JOIN videos 
-  ON users_to_videos.video_id = videos.video_id 
-  WHERE users_to_videos.username = '${userData.username}';`
+app.get('/pastVideos', (req, res) => {
+  var query = `SELECT * FROM videos FULL JOIN users_to_videos ON users_to_videos.movie_id = videos.video_id;`;
   db.any(query)
-    .then(videos => { 
+    .then((videos) => { 
       res.render('pages/pastVideos', {videos});
     })
-    .catch(err =>{
+    .catch((err) =>{
       res.render('pages/pastVideos', {videos: []});
-    });
+  });
 });
 
 //Lab11 unit testing route
