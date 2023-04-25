@@ -384,8 +384,8 @@ async function queryAllstandard(query) {
 
 
 
-
-
+// global variable to save last search when home page rendered
+var lastSearch = [];
 
 // youtube works 
 
@@ -395,11 +395,12 @@ app.post('/home', (req, res) => {
   if(req.body.q != undefined && req.body.q != "" && req.body.q != " ") {
     queryAllstandard(req.body.q).then((result) => {
       console.log(result)
+      lastSearch = result;
       res.render('pages/home', { result,page_name:"home",query:req.body.q});
     })
   } else {
     console.log("not defined")
-    let result = []; 
+    let result = lastSearch; 
     res.render('pages/home', { result, page_name:"home",query:req.body.q});
   }
 
