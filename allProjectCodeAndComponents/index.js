@@ -350,7 +350,6 @@ app.get('/results', (req, res) => {
   // res.render('pages/results', { result });
 
   queryAllstandard('hi').then((result) => {
-    console.log(result);
     res.render('pages/results', { result });
   })
 });
@@ -362,7 +361,6 @@ app.post('/home', (req, res) => {
   console.log(req.body)
   if(req.body.q != undefined && req.body.q != "" && req.body.q != " ") {
     queryAllstandard(req.body.q).then((result) => {
-      console.log(result)
       res.render('pages/home', { result,page_name:"home",query:req.body.q});
     })
   } else {
@@ -389,13 +387,19 @@ app.get('/home', (req, res) => {
 // });
 
 app.post('/details', (req, res) => {
-  console.log(req.body);
   let result = JSON.parse(req.body.b);
+  const query = `SELECT * FROM videos WHERE videos.title = '${result.title}' LIMIT 1;`;
+  db.one(query)
+  .then((data) => {
+    console.log(data);
+  })
+  .catch((err) => {
   if (result.platform == 'youtube'){
-  addVideo(result.title, 1, result.description, result.link);
-  } else {
-  addVideo(result.title, 2, result.description, result.link);
+    addVideo(result.title, 1, result.description, result.url);
+  } else if (result.platform == 'vimeo') {
+    addVideo(result.title, 2, result.description, result.url);
   }
+  });
   res.render('pages/details', { result,page_name:"details" });
 })
 // "profile" page routes
