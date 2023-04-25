@@ -29,8 +29,8 @@
               <p class="card-text"><%= result[i].description %></p>
               <form action="/details" method = "POST">
                 
-                <button  class="btn btn-primary" name = "b" value = "<%= result[i].title%>">
-                  Details
+                <button  class="btn btn-primary" name = "b" value = "<%= result[i]%>">
+                  "<%= result[i] %>"
                 </button>
             </form>
             </div>
