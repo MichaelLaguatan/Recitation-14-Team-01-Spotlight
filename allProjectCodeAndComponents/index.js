@@ -391,6 +391,9 @@ app.get('/home', (req, res) => {
     res.render("pages/home.ejs",{result});
 });
 
+app.post('/details', (req, res) => {
+  console.log(req.body)
+})
 // "profile" page routes
 app.get('/profile', (req, res) => {
   res.render("pages/profile", {user: userData});
