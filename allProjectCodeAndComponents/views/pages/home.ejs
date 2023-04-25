@@ -4,15 +4,14 @@
   <div class="container">
 
     <div class="col"><%- include ('../partials/message') %></div>
-    <h2>Welcome Home</h2>
     
-    <form action="/home" method="POST">
-      <input type="search" id="query" name="q" placeholder="Find Creative videos...">
-      <button>Search</button>
+    <form action="/home" method="POST" id = "searchbox" data-search = "<%= JSON.stringify(result)%>">
+      <input type="search" id="query" name="q" autocomplete="off" placeholder="Find Creative videos...">
+
     </form>
-    <h5>Video results displayed below...</h5>
-    <div class="container-fluid">
+    <div id = "results" class="container-fluid">
       <div class="row">
+        
         <% for(var i = 0; i < result.length; i++) { %>
         <div class="col-md-3">
           <div class="card">
@@ -44,9 +43,56 @@
 
 
   </div>
+
 </main>
 
+
 <style>
+  #results {
+    padding-top:10%; 
+    
+    transition: opacity linear 1s;
+  }
+  #searchbox {
+    
+    top:20%; 
+    width:50%; 
+    position: fixed;
+    left: 50%;
+    transform: translate(-50%, 0);
+    transition: top 3s ease 0s; /* only transition top property */
+    
+  }
+  #query  {
+    background-color: black;
+    opacity: 80%;
+    text-align: left;
+    width:94%;
+    border-width: .1em;
+    border-color:black; 
+    border-radius: 1em;
+    padding:.5em;
+    color:white; 
+    height:5vh; 
+    transition: height linear .5s;
+  }
+  #search input:focus {
+    height:10vh; 
+    border-color:blue; 
+
+  }
+  #search button {
+    width:5%; 
+    color:white; 
+    font-weight: bolder;
+    background-color: transparent;
+    border:none; 
+    background-color: rgba(0, 0, 0, 0.39);
+    border-radius: 2em;
+  }
+  button:hover {
+    opacity: 75%;
+  }
   .card {
     position: relative;
     height:300px; 
@@ -70,4 +116,7 @@
     transform: translateX(-50%);
   }
 </style>
+<script>
+
+</script>
 <%- include ('../partials/footer') %>
