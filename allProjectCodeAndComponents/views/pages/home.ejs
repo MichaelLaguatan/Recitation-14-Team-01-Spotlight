@@ -5,7 +5,7 @@
 
     <div class="col"><%- include ('../partials/message') %></div>
     
-    <form action="/home" method="POST" id = "searchbox" data-search = "<%= JSON.stringify(result)%>">
+    <form action="/home" method="POST" id = "searchbox" data-search = "<%= JSON.stringify(result)%>" onsubmit="addloading()">
       <input type="search" id="query" value = "<%=query%>" name="q" autocomplete="off" placeholder="Find Creative videos...">
 
     </form>
@@ -48,6 +48,7 @@
 
 
 <style>
+
   #results {
     padding-top:10%; 
     
@@ -116,7 +117,5 @@
     transform: translateX(-50%);
   }
 </style>
-<script>
 
-</script>
 <%- include ('../partials/footer') %>
