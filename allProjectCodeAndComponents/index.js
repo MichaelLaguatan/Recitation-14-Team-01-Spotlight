@@ -85,13 +85,10 @@ app.get('/', (req, res) => {
     res.redirect('/welcome');
 });
 
-
-
 app.get('/welcome', (req,res)=>
 {
   res.render('pages/welcome.ejs')
 })
-
 
 // "register" page routes
 app.get('/register', (req, res) => {
@@ -119,8 +116,6 @@ app.post('/register', async (req, res) => {
     });
 });
 
-
-
 /*
   Intended Usage: 
   This function will give a table of videos that are tied by the users_to_videos table
@@ -128,17 +123,9 @@ app.post('/register', async (req, res) => {
 */
 function queryAccountVideos(username){
   var output = [];
-  var query = `
-  SELECT 
-    videos.video_id, 
-    videos.title, 
-    videos.release, 
-    videos.views, 
-    videos.link  
-  FROM users_to_videos 
-  FULL JOIN videos 
-  ON users_to_videos.video_id = videos.video_id 
-  WHERE users_to_videos.username = '${username}';`
+  var query = `SELECT * FROM videos FULL JOIN users_to_videos 
+  ON users_to_videos.movie_id = videos.video_id 
+  WHERE users_to_videos.username = '${username}';`;
   db.any(query)
     .then(function(data){ 
       output = data;
@@ -182,11 +169,11 @@ function queryVideoTags(video_id){
   Said data is (string, int, int, string)
   Furthermore, this will return the video's id.
 */
-function addVideo(title, release, views, link){
-  var query = `INSERT INTO "videos" (title, release, views, link)
+function addVideo(title, platform, description, link){
+  var query = `INSERT INTO videos (title, platform, description, link)
   VALUES ($1, $2, $3, $4)
   RETURNING *;`;
-  db.any(query, [title, release, views, link])
+  db.any(query, [title, platform, description, link])
     .then(function(data){
       data = data[0].video_id;
       console.log("Output: " + data);
@@ -239,8 +226,6 @@ app.get('/login', (req, res) => {
     //res.json({status: 'success', message: 'Logged in successfully'});
 });
 
-
-
 app.post('/login', (req, res) => {
     var username = req.body.username;
 
@@ -268,9 +253,6 @@ app.post('/login', (req, res) => {
         res.redirect('/register');
     });
 });
-
-
-
 
 app.get('/test', (req, res) => {
   res.render("pages/test");
@@ -359,13 +341,9 @@ app.get('/results', (req, res) => {
   // res.render('pages/results', { result });
 
   queryAllstandard('hi').then((result) => {
-    console.log(result)
+    console.log(result);
     res.render('pages/results', { result });
-
   })
-
-
-  
 });
 
 // youtube works 
@@ -375,7 +353,7 @@ app.post('/home', (req, res) => {
   console.log(req.body)
   if(req.body.q != undefined && req.body.q != "" && req.body.q != " ") {
     queryAllstandard(req.body.q).then((result) => {
-      console.log(result)
+      console.log(result);
       res.render('pages/home', { result });
     })
   } else {
