@@ -29,8 +29,7 @@
               <h5 class="card-title"><%= result[i].title %></h5>
               <p class="card-text"><%= result[i].description %></p>
               <form action="/details" method = "POST">
-                
-                <button  class="btn btn-primary" name = "b" value = "<%= result[i]%>">
+                <button  class="btn btn-primary" name = "b" value = "<%= JSON.stringify(result[i])%>">
                   "<%= result[i] %>"
                 </button>
             </form>

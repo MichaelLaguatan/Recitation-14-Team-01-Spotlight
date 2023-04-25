@@ -406,9 +406,26 @@ app.get('/home', (req, res) => {
     res.render("pages/home.ejs",{result});
 });
 
+
+
+
+
+
+// "details" page routes
+app.get('/details', (req, res) => {
+  res.render("pages/details");
+});
+
 app.post('/details', (req, res) => {
-  console.log(req.body)
+  console.log("DETIALSSSSSS WOAAAA HELLLA OF THEMMMM");
+  console.log(req.body);
+  res.render('pages/details');
+
 })
+
+
+
+
 
 // "pastVideos" page routes
 app.get('/pastVideos', (req, res) => {

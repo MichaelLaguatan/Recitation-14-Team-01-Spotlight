@@ -1,0 +1,37 @@
+<%- include ('../partials/header') %>
+
+<main>
+  <div class="container">
+
+    <div class="col"><%- include ('../partials/message') %></div>
+    <h2>Video Details Page</h2>
+
+
+  </div>
+</main>
+
+<style>
+  .card {
+    position: relative;
+    height:300px; 
+  }
+  .card .card-body {
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    color: #fff;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  .card .btn {
+    pointer-events: all;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+</style>
+<%- include ('../partials/footer') %>
