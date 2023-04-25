@@ -395,19 +395,19 @@ app.post('/home', (req, res) => {
   if(req.body.q != undefined && req.body.q != "" && req.body.q != " ") {
     queryAllstandard(req.body.q).then((result) => {
       console.log(result)
-      res.render('pages/home', { result,page_name:"home"});
+      res.render('pages/home', { result,page_name:"home",query:req.body.q});
     })
   } else {
     console.log("not defined")
     let result = []; 
-    res.render('pages/home', { result, page_name:"home"});
+    res.render('pages/home', { result, page_name:"home",query:req.body.q});
   }
 
 
 })
 app.get('/home', (req, res) => {
   let result = []; 
-    res.render("pages/home.ejs",{result,page_name:"home"});
+    res.render("pages/home.ejs",{result,page_name:"home",query:"" });
 });
 
 app.post('/details', (req, res) => {
