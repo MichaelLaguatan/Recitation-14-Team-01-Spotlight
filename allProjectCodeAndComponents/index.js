@@ -85,13 +85,10 @@ app.get('/', (req, res) => {
     res.redirect('/welcome');
 });
 
-
-
 app.get('/welcome', (req,res)=>
 {
   res.render('pages/welcome.ejs',{page_name:"welcome"})
 })
-
 
 // "register" page routes
 app.get('/register', (req, res) => {
@@ -119,36 +116,25 @@ app.post('/register', async (req, res) => {
     });
 });
 
-
-
 /*
   Intended Usage: 
   This function will give a table of videos that are tied by the users_to_videos table
   when given a username.
 */
 function queryAccountVideos(username){
-  var output;
-  var query = `
-  SELECT 
-    videos.video_id, 
-    videos.title, 
-    videos.release, 
-    videos.views, 
-    videos.url  
-  FROM users_to_videos 
-  FULL JOIN videos 
-  ON users_to_videos.video_id = videos.video_id 
-  WHERE users_to_videos.username = '${username}';`
+  var output = [];
+  var query = `SELECT * FROM videos FULL JOIN users_to_videos 
+  ON users_to_videos.movie_id = videos.video_id 
+  WHERE users_to_videos.username = '${username}';`;
   db.any(query)
     .then(function(data){ 
-      output = data; 
-      return;
+      output = data;
     })
     .catch(function(err){
       output = null;
       return console.log(err + " (Vincent did a goofy D:)");
     });
-  return output;
+    return output;
 }
 
 /*
@@ -183,19 +169,24 @@ function queryVideoTags(video_id){
   Said data is (string, int, int, string)
   Furthermore, this will return the video's id.
 */
-function addVideo(title, release, views, link){
-  var query = `INSERT INTO "videos" (title, release, views, link)
-  VALUES ($1, $2, $3, $4)
-  RETURNING *;`;
-  db.any(query, [title, release, views, link])
+function addVideo(title, platform, description, link){
+  var movie_id = 0;
+  var videoQuery = `INSERT INTO videos (title, platform, description, link) VALUES ('${title}', '${platform}', '${description}', '${link}') RETURNING *;`;
+  db.any(videoQuery)
+  .then(function(data){
+    movie_id = data[0].video_id;
+    var userQuery = `INSERT INTO users_to_videos (username, movie_id) VALUES ('${userData.username}', ${movie_id}) RETURNING *;`;
+    db.any(userQuery)
     .then(function(data){
-      data = data[0].video_id;
-      console.log("Output: " + data);
-      return data;
+      return;
     })
     .catch(function(err){
-      return console.log(err + " (Vincent did a goofy on addVideo D:)");
+      return console.log(err);
     });
+  })
+  .catch(function(err){
+    return console.log(err + " (Vincent did a goofy on addVideo D:)");
+  });
 }
 
 /*
@@ -240,8 +231,6 @@ app.get('/login', (req, res) => {
     //res.json({status: 'success', message: 'Logged in successfully'});
 });
 
-
-
 app.post('/login', (req, res) => {
     var username = req.body.username;
 
@@ -270,9 +259,6 @@ app.post('/login', (req, res) => {
     });
 });
 
-
-
-
 app.get('/test', (req, res) => {
   res.render("pages/test",{page_name:"test"});
 });
@@ -295,7 +281,6 @@ await fetch(url)
     .then(response => response.json())
     .then(data => {
      result = data.items; 
-    
     })
     .catch(error => console.error(error));
   return result; 
@@ -358,43 +343,12 @@ async function queryAllstandard(query) {
   }
    return combined; 
 }
-
- 
-
-
-
-
-
-
-// // Authentication Middleware
-
-// const auth = (req, res, next) => {
-//   if (!req.session.user) {
-//     // Default to login page.
-//     return res.redirect('/login');
-    
-//   }
-//   next();
-// };
-
-// // Authentication Required
-// app.use(auth);
-
-
-
-
-
-// global variable to save last search when home page rendered
-var lastSearch = [];
-
 // youtube works 
 
 // "home" page routs
 app.post('/home', (req, res) => {
-  console.log(req.body)
   if(req.body.q != undefined && req.body.q != "" && req.body.q != " ") {
     queryAllstandard(req.body.q).then((result) => {
-      console.log(result)
       lastSearch = result;
       res.render('pages/home', { result,page_name:"home",query:req.body.q});
     })
@@ -411,31 +365,22 @@ app.get('/home', (req, res) => {
     res.render("pages/home.ejs",{result,page_name:"home",query:"" });
 });
 
-
-
-
-
-
-// "details" page routes
-// app.get('/details', (req, res) => {
-//   res.render("pages/details");
-// });
-
 app.post('/details', (req, res) => {
-  console.log(req.body);
   let result = JSON.parse(req.body.b);
+  const query = `SELECT * FROM videos WHERE videos.title = '${result.title}' LIMIT 1;`;
+  db.one(query)
+  .then((data) => {
+    console.log(data);
+  })
+  .catch((err) => {
+  if (result.platform == 'youtube'){
+    addVideo(result.title, 1, result.description, result.url);
+  } else if (result.platform == 'vimeo') {
+    addVideo(result.title, 2, result.description, result.url);
+  }
+  });
   res.render('pages/details', { result,page_name:"details" });
 })
-
-
-
-
-
-// "pastVideos" page routes
-app.get('/pastVideos', (req, res) => {
-  res.render("pages/pastVideos.ejs",{page_name:"history"});
-});
-
 // "profile" page routes
 app.get('/profile', (req, res) => {
   res.render("pages/profile", {user: userData,page_name:"profile"});
@@ -473,6 +418,20 @@ app.get("/logout", (req, res) => {
   res.render("pages/login.ejs", {
     message: 'logged out successfully',
     page_name:"login"
+  });
+});
+
+//PastVideos routes
+app.get('/pastVideos', (req, res) => {
+  var query = `SELECT * FROM videos FULL JOIN users_to_videos 
+  ON users_to_videos.movie_id = videos.video_id 
+  WHERE users_to_videos.username = '${userData.username}';`;
+  db.any(query)
+    .then((videos) => { 
+      res.render('pages/pastVideos', {videos, page_name:"history"});
+    })
+    .catch((err) =>{
+      res.render('pages/pastVideos', {videos: [], page_name:"history"});
   });
 });
 
