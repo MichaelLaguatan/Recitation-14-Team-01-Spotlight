@@ -171,6 +171,24 @@ async function queryVideoTags(video_id){
 
 /*
   Intended Usage:
+  This function will give a json file of all the tags that exist in the database.
+*/
+async function allTags(){
+  var query = `
+  SELECT 
+    tags.tag_id 
+  FROM tags;`
+  return await db.any(query)
+    .then(function(data){
+      return data;
+    })
+    .catch(function(err){
+      return console.log(err + " (Vincent did a goofy on allTags D:)");
+    });
+}
+
+/*
+  Intended Usage:
   This function will add to the table "videos" a set of inputted data.
   Said data is (string, int, string, string)
   Furthermore, this will return the video's id.
