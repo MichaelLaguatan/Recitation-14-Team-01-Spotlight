@@ -1,0 +1,21 @@
+Over the period of April 13th, 2023 to April 20th, 2023 the following updates were made:
+
+New Features
+  - Modifying the pre-existing data base to accomodate saving videos by adding a "videos", "tags", "users_to_videos", and "videos_to_tags" table.
+  - Added functions that can add to the tables in the form of an "addTag" and "addVideo".
+    - "/test" will call a prewritten test of the above function
+  - Added functionis that can query the tables for all videos associated with a user and all tags associated with a video.
+  - Username and password change API has been implemented
+  - CSS sylization added for header and footer
+  - Tooltip hover implemented.
+  - A welcome page skeleton has been created
+  - A search bar has been created and will pull up results
+    - YouTube
+    - Vimeo
+ 
+
+Updates 
+  - Various displays will directly refer to the current logged in username
+    - Password changed successfully, password changed failed, username changed successfully, username changed failed, Profiles page
+  - Debugging messages reflect more on what happened
+  - Some display colors
