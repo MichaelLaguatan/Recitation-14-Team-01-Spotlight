@@ -281,7 +281,6 @@ await fetch(url)
     .then(response => response.json())
     .then(data => {
      result = data.items; 
-    
     })
     .catch(error => console.error(error));
   return result; 
@@ -344,21 +343,10 @@ async function queryAllstandard(query) {
   }
    return combined; 
 }
-
- 
-app.get('/results', (req, res) => {
-  // res.render('pages/results', { result });
-
-  queryAllstandard('hi').then((result) => {
-    res.render('pages/results', { result });
-  })
-});
-
 // youtube works 
 
 // "home" page routs
 app.post('/home', (req, res) => {
-  console.log(req.body)
   if(req.body.q != undefined && req.body.q != "" && req.body.q != " ") {
     queryAllstandard(req.body.q).then((result) => {
       res.render('pages/home', { result,page_name:"home",query:req.body.q});
@@ -376,18 +364,9 @@ app.get('/home', (req, res) => {
     res.render("pages/home.ejs",{result,page_name:"home",query:"" });
 });
 
-
-
-
-
-
-// "details" page routes
-// app.get('/details', (req, res) => {
-//   res.render("pages/details");
-// });
-
 app.post('/details', (req, res) => {
   let result = JSON.parse(req.body.b);
+  console.log(result);
   const query = `SELECT * FROM videos WHERE videos.title = '${result.title}' LIMIT 1;`;
   db.one(query)
   .then((data) => {

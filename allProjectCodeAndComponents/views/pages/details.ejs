@@ -17,9 +17,10 @@
           <a href="<%= result.url %>">Watch on Vimeo</a>
           <% let id = result.id.split("/")[2]; %>
           <iframe height = "900px" src="https://player.vimeo.com/video/<%= id %>" height="300" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
-        <%} if (result.platform == 1) {%>
+        <%} if (result.platform == 2) {%>
+          <% let id = result.link.split("/")[3]; %>
           <a href="<%= result.url %>">Watch on Vimeo</a>
-          <iframe  height = "900px" src="<%= result.url %>"  height="300" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+          <iframe  height = "900px" src="https://player.vimeo.com/video/<%= id %>"  height="300" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
         <%}%>
       </div>
     </div>
