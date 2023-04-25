@@ -11,6 +11,11 @@ const axios = require('axios'); // To make HTTP requests from our server. We'll 
 const { queryResult } = require('pg-promise');
 const json = require('body-parser/lib/types/json');
 
+
+
+
+
+
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
 // *****************************************************
@@ -112,7 +117,10 @@ app.post('/register', async (req, res) => {
     .catch(err => {
         console.log('Registration failed');
         console.log(err);
-        res.redirect('/register');
+        res.render('pages/register.ejs', {message: 'An account with that username already exists.'});
+//         res.render("pages/login.ejs", {
+// message: 'Wrong password, please try again',
+//         });
     });
 });
 
@@ -248,14 +256,18 @@ app.post('/login', (req, res) => {
         }else{
             //throw Error("Incorrect username or password");
             console.log("Incorrect username or password")
-            res.redirect('/login');
+            res.render("pages/login.ejs", {
+              message: 'Wrong password, please try again',
+            });
         }
        
 
     })
     .catch(err => {
         console.log(err);
-        res.redirect('/register');
+        res.render("pages/register.ejs", {
+          message: 'User does not exist.',
+        });
     });
 });
 
@@ -359,7 +371,8 @@ app.post('/home', (req, res) => {
   }
 
 
-})
+
+});
 app.get('/home', (req, res) => {
   let result = []; 
     res.render("pages/home.ejs",{result,page_name:"home",query:"" });
@@ -383,7 +396,18 @@ app.post('/details', (req, res) => {
 })
 // "profile" page routes
 app.get('/profile', (req, res) => {
-  res.render("pages/profile", {user: userData,page_name:"profile"});
+
+  const userExists = req.session.user;
+  if(!req.session.user) 
+  {
+    res.render('pages/login', {message: 'You are not logged in.', page_name:"login"});
+  }
+  else
+  {
+    res.render("pages/profile", {user: userData,page_name:"profile"});
+  }
+   
+
 });
 
 app.post('/usernameChange', (req, res) => {
@@ -413,26 +437,45 @@ app.post('/passwordChange', async (req, res) => {
 
 // logout routes
 app.get("/logout", (req, res) => {
-  console.log("User logged out successfully")
-  req.session.destroy();
-  res.render("pages/login.ejs", {
-    message: 'logged out successfully',
-    page_name:"login"
-  });
+
+  if(req.session.user)
+  {
+    console.log("User logged out successfully")
+    req.session.destroy();
+    res.render("pages/login.ejs", {
+      message: 'logged out successfully',
+      page_name:"login"
+    });
+  }
+  else
+  {
+    res.render('pages/login', {message: 'You are not logged in.', 
+    page_name:"login"});
+  }
+
 });
 
 //PastVideos routes
 app.get('/pastVideos', (req, res) => {
-  var query = `SELECT * FROM videos FULL JOIN users_to_videos 
-  ON users_to_videos.movie_id = videos.video_id 
-  WHERE users_to_videos.username = '${userData.username}';`;
-  db.any(query)
-    .then((videos) => { 
-      res.render('pages/pastVideos', {videos, page_name:"history"});
-    })
-    .catch((err) =>{
-      res.render('pages/pastVideos', {videos: [], page_name:"history"});
-  });
+
+  if(req.session.user)
+  {
+    var query = `SELECT * FROM videos FULL JOIN users_to_videos 
+    ON users_to_videos.movie_id = videos.video_id 
+    WHERE users_to_videos.username = '${userData.username}';`;
+    db.any(query)
+      .then((videos) => { 
+        res.render('pages/pastVideos', {videos, page_name:"history"});
+      })
+      .catch((err) =>{
+        res.render('pages/pastVideos', {videos: [], page_name:"history"});
+    });
+  }
+  else
+  {
+    res.render('pages/login', {message: 'Please login to access your video history.', page_name:"login"});
+  }
+
 });
 
 //Lab11 unit testing route
