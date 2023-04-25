@@ -189,6 +189,30 @@ async function allTags(){
 
 /*
   Intended Usage:
+  This function will give a json file of all the videos (all columns of the videos table) 
+  in the database that have a tag matching the input.
+*/
+async function queryByTags(tag){
+  var query = `
+  SELECT 
+    videos.*
+  FROM videos
+  FULL JOIN videos_to_tags
+  ON videos.video_id = videos_to_tags.video_id
+  FULL JOIN tags
+  ON videos_to_tags.tag_id = tags.tag_id
+  WHERE tags.tag_id = '${tag}';`
+  return await db.any(query)
+    .then(function(data){
+      return data;
+    })
+    .catch(function(err){
+      return console.log(err + " (Vincent did a goofy on queryByTags D:)");
+    });
+}
+
+/*
+  Intended Usage:
   This function will add to the table "videos" a set of inputted data.
   Said data is (string, int, string, string)
   Furthermore, this will return the video's id.
