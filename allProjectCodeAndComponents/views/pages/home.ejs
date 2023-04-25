@@ -66,15 +66,23 @@
     background-color: black;
     opacity: 80%;
     text-align: left;
-    width:94%;
+    width:90%;
     border-width: .1em;
     border-color:black; 
     border-radius: 1em;
-    padding:.5em;
+    padding:1em;
     color:white; 
     height:5vh; 
-    transition: height linear .5s;
+    transition: width ease-in 0.5s;
+    transition: color ease-in 0.5s;
+    opacity: 100%;
   }
+
+  #query:focus {
+    width:100%;
+    color:rgb(255, 0, 115);
+  }
+
   #search input:focus {
     height:10vh; 
     border-color:blue; 
