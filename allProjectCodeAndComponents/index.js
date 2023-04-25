@@ -423,7 +423,7 @@ app.get('/home', (req, res) => {
 app.post('/details', (req, res) => {
   console.log(req.body);
   let result = JSON.parse(req.body.b);
-  res.render('pages/details', { result });
+  res.render('pages/details', { result,page_name:"details" });
 })
 
 
