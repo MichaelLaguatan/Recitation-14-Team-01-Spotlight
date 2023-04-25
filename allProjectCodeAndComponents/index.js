@@ -396,6 +396,7 @@ app.post('/details', (req, res) => {
 })
 // "profile" page routes
 app.get('/profile', (req, res) => {
+
   const userExists = req.session.user;
   if(!req.session.user) 
   {
@@ -406,6 +407,7 @@ app.get('/profile', (req, res) => {
     res.render("pages/profile", {user: userData,page_name:"profile"});
   }
    
+
 });
 
 app.post('/usernameChange', (req, res) => {
@@ -435,6 +437,7 @@ app.post('/passwordChange', async (req, res) => {
 
 // logout routes
 app.get("/logout", (req, res) => {
+
   if(req.session.user)
   {
     console.log("User logged out successfully")
@@ -449,10 +452,12 @@ app.get("/logout", (req, res) => {
     res.render('pages/login', {message: 'You are not logged in.', 
     page_name:"login"});
   }
+
 });
 
 //PastVideos routes
 app.get('/pastVideos', (req, res) => {
+
   if(req.session.user)
   {
     var query = `SELECT * FROM videos FULL JOIN users_to_videos 
@@ -470,6 +475,7 @@ app.get('/pastVideos', (req, res) => {
   {
     res.render('pages/login', {message: 'Please login to access your video history.', page_name:"login"});
   }
+
 });
 
 //Lab11 unit testing route
