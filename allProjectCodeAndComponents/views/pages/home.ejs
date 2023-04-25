@@ -5,7 +5,7 @@
 
     <div class="col"><%- include ('../partials/message') %></div>
     
-    <form action="/home" method="POST" id = "searchbox" data-search = "<%= JSON.stringify(result)%>">
+    <form action="/home" method="POST" id = "searchbox" data-search = "<%= JSON.stringify(result)%>" onsubmit="addloading()">
       <input type="search" id="query" value = "<%=query%>" name="q" autocomplete="off" placeholder="Find Creative videos...">
 
     </form>
@@ -29,7 +29,7 @@
               <p class="card-text"><%= result[i].description %></p>
               <form action="/details" method = "POST">
                 <button  class="btn btn-primary" name = "b" value = "<%= JSON.stringify(result[i])%>">
-                  <h7>"watch video full screen"</h7>
+                  <h7>View</h7>
                 </button>
               </form>
             </div>
@@ -47,6 +47,7 @@
 
 
 <style>
+
   #results {
     padding-top:10%; 
     
@@ -66,15 +67,26 @@
     background-color: black;
     opacity: 80%;
     text-align: left;
-    width:94%;
+    width:90%;
     border-width: .1em;
     border-color:black; 
     border-radius: 1em;
-    padding:.5em;
+    padding:1em;
     color:white; 
     height:5vh; 
-    transition: height linear .5s;
+    transition: width ease-in 0.5s;
+    transition: color ease-in 0.5s;
+    transition: border-color ease-in 0.5s;
+    opacity: 100%;
   }
+
+  #query:focus {
+    width:100%;
+    color:rgb(255, 0, 115);
+    border-color:rgb(255,0,115);
+
+  }
+
   #search input:focus {
     height:10vh; 
     border-color:blue; 
@@ -115,7 +127,5 @@
     transform: translateX(-50%);
   }
 </style>
-<script>
 
-</script>
 <%- include ('../partials/footer') %>
