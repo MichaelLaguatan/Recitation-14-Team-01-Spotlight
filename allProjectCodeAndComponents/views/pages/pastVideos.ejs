@@ -20,6 +20,11 @@
             <div class="card-body">
               <h5 class="card-title"><%= video.title %></h5>
               <p class="card-text"><%= video.description %></p>
+              <form action="/details" method = "POST">
+                <button  class="btn btn-primary" name = "b" value = "<%= JSON.stringify(video)%>">
+                  <h7>"watch video"</h7>
+                </button>
+              </form>
             </div>
           </div>
         </div>

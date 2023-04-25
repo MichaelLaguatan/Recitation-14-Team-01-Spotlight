@@ -170,18 +170,23 @@ function queryVideoTags(video_id){
   Furthermore, this will return the video's id.
 */
 function addVideo(title, platform, description, link){
-  var query = `INSERT INTO videos (title, platform, description, link)
-  VALUES ($1, $2, $3, $4)
-  RETURNING *;`;
-  db.any(query, [title, platform, description, link])
+  var movie_id = 0;
+  var videoQuery = `INSERT INTO videos (title, platform, description, link) VALUES ('${title}', '${platform}', '${description}', '${link}') RETURNING *;`;
+  db.any(videoQuery)
+  .then(function(data){
+    movie_id = data[0].video_id;
+    var userQuery = `INSERT INTO users_to_videos (username, movie_id) VALUES ('${userData.username}', ${movie_id}) RETURNING *;`;
+    db.any(userQuery)
     .then(function(data){
-      data = data[0].video_id;
-      console.log("Output: " + data);
-      return data;
+      return;
     })
     .catch(function(err){
-      return console.log(err + " (Vincent did a goofy on addVideo D:)");
+      return console.log(err);
     });
+  })
+  .catch(function(err){
+    return console.log(err + " (Vincent did a goofy on addVideo D:)");
+  });
 }
 
 /*
@@ -386,6 +391,11 @@ app.get('/home', (req, res) => {
 app.post('/details', (req, res) => {
   console.log(req.body);
   let result = JSON.parse(req.body.b);
+  if (result.platform == 'youtube'){
+  addVideo(result.title, 1, result.description, result.link);
+  } else {
+  addVideo(result.title, 2, result.description, result.link);
+  }
   res.render('pages/details', { result,page_name:"details" });
 })
 // "profile" page routes
