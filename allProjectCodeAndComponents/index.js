@@ -416,15 +416,14 @@ app.get('/home', (req, res) => {
 
 
 // "details" page routes
-app.get('/details', (req, res) => {
-  res.render("pages/details");
-});
+// app.get('/details', (req, res) => {
+//   res.render("pages/details");
+// });
 
 app.post('/details', (req, res) => {
-  console.log("DETIALSSSSSS WOAAAA HELLLA OF THEMMMM");
   console.log(req.body);
-  res.render('pages/details');
-
+  let result = JSON.parse(req.body.b);
+  res.render('pages/details', { result });
 })
 
 
