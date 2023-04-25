@@ -10,12 +10,14 @@
         <div class="col-md-3">
           <div class="card">
             <% if(video.platform == 1) {%>
-              <a href="https://www.youtube.com/watch?v=<%= video.link %>">Watch on YouTube</a>
-              <iframe  height = "300px" src="<%= video.link %>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+              <% let id = video.link.split("=")[2]; %>
+              <a href="<%= video.link %>">Watch on YouTube</a>
+              <iframe  height = "300px" src="https://www.youtube.com/embed/<%= id %>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
               <%}%>
               <% if(video.platform == 2) {%>
+              <% let id = video.link.split("/")[3]; %>
                 <a href="<%= video.link %>">Watch on Vimeo</a>
-                <iframe height = "300px" src="<%= video.link %>"  height="300" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+                <iframe height = "300px" src="https://player.vimeo.com/video/<%= id %>"  height="300" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
               <%}%>
             <div class="card-body">
               <h5 class="card-title"><%= video.title %></h5>
