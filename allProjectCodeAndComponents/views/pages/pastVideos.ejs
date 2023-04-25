@@ -10,7 +10,7 @@
         <div class="col-md-3">
           <div class="card">
             <% if(video.platform == 1) {%>
-              <% let id = video.link.split("=")[2]; %>
+              <% let id = video.link.split("=")[1]; %>
               <a href="<%= video.link %>">Watch on YouTube</a>
               <iframe  height = "300px" src="https://www.youtube.com/embed/<%= id %>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
               <%}%>
@@ -20,11 +20,11 @@
                 <iframe height = "300px" src="https://player.vimeo.com/video/<%= id %>"  height="300" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
               <%}%>
             <div class="card-body">
-              <h5 class="card-title"><%= video.title %></h5>
-              <p class="card-text"><%= video.description %></p>
+              <h5 class="card-title text-truncate"><%= video.title %></h5>
+              <p class="card-text text-truncate"><%= video.description %></p>
               <form action="/details" method = "POST">
                 <button  class="btn btn-primary" name = "b" value = "<%= JSON.stringify(video)%>">
-                  <h7>"watch video"</h7>
+                  <h7>View</h7>
                 </button>
               </form>
             </div>
@@ -35,5 +35,37 @@
     </div>
   </div>
 </main>
+<style>
+ button:hover {
+    opacity: 75%;
+  }
+  .card {
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  .card .card-body {
+    pointer-events: none;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    color: #fff;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  .card .btn {
+    pointer-events: all;
+    position: relative;
+    float: left;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .col-md-3 {
+    padding-top:10px;
+    padding-bottom:10px; 
+  }
+</style>
+</style>
 
 <%- include ('../partials/footer') %> 

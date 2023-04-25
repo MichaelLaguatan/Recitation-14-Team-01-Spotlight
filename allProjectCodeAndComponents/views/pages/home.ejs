@@ -7,26 +7,23 @@
     
     <form action="/home" method="POST" id = "searchbox" data-search = "<%= JSON.stringify(result)%>" onsubmit="addloading()">
       <input type="search" id="query" value = "<%=query%>" name="q" autocomplete="off" placeholder="Find Creative videos...">
-
     </form>
     <div id = "results" class="container-fluid">
       <div class="row">
-        
         <% for(var i = 0; i < result.length; i++) { %>
         <div class="col-md-3">
           <div class="card">
             <% if(result[i].platform == 'youtube') {%>
               <a href="https://www.youtube.com/watch?v=<%= result[i].id %>">Watch on YouTube</a>
-              <iframe  height = "300px" src="https://www.youtube.com/embed/<%= result[i].id %>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+              <iframe height = "300px" src="https://www.youtube.com/embed/<%= result[i].id %>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
               <%}%>
               <% if(result[i].platform == 'vimeo') {%>
                 <a href="<%= result[i].url %>">Watch on Vimeo</a>
                 <iframe height = "300px" src="https://player.vimeo.com/video/<%= result[i].id.split("/")[2] %>"  height="300" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
-
               <%}%>
             <div class="card-body">
-              <h5 class="card-title"><%= result[i].title %></h5>
-              <p class="card-text"><%= result[i].description %></p>
+              <h5 class="card-title text-truncate"><%= result[i].title %></h5>
+              <p class="card-text text-truncate"><%= result[i].description %></p>
               <form action="/details" method = "POST">
                 <button  class="btn btn-primary" name = "b" value = "<%= JSON.stringify(result[i])%>">
                   <h7>View</h7>
@@ -38,26 +35,19 @@
         <% } %>
       </div>
     </div>
-
-
-
   </div>
-
 </main>
-
-
 <style>
-
   #results {
     padding-top:10%; 
     
     transition: opacity linear 1s;
   }
   #searchbox {
-    
-    top:20%; 
+    top:25px; 
     width:50%; 
-    position: fixed;
+    position: sticky;
+    z-index: 9;
     left: 50%;
     transform: translate(-50%, 0);
     transition: top 3s ease 0s; /* only transition top property */
@@ -106,11 +96,10 @@
   }
   .card {
     position: relative;
-    height:300px; 
+    background-color: rgba(0, 0, 0, 0.5);
   }
   .card .card-body {
     pointer-events: none;
-    position: absolute;
     top: 0;
     left: 0;
     right: 0;
@@ -121,10 +110,17 @@
   }
   .card .btn {
     pointer-events: all;
-    position: absolute;
+    position: relative;
+    float: left;
     bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
+  }
+  .col-md-3 {
+    position: relative;
+    z-index: 0;
+    padding-top:10px;
+    padding-bottom:10px; 
   }
 </style>
 
