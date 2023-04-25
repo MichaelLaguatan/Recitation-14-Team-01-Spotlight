@@ -366,7 +366,6 @@ app.get('/home', (req, res) => {
 
 app.post('/details', (req, res) => {
   let result = JSON.parse(req.body.b);
-  console.log(result);
   const query = `SELECT * FROM videos WHERE videos.title = '${result.title}' LIMIT 1;`;
   db.one(query)
   .then((data) => {
