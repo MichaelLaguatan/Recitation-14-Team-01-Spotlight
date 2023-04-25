@@ -1,0 +1,7 @@
+Over the period of April 6th, 2023 to April 13th, 2023 the following updates were made:
+
+New Features
+ - A sql script was created in order to add a users table which contains users and passwords
+ - Register functionality adds to the above table
+ - Login functionality between sessions
+ - Skeleton for saved videos and search

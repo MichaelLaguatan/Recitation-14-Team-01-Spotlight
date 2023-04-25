@@ -4,29 +4,128 @@
   <main>
     <div class="container">
 
-      <div class="col"><%- include ('../partials/message') %></div>
-      <h2>Welcome Home</h2>
-      <form action="/home" method="POST">
-        <input type="search" id="query" name="q" placeholder="Find Creative videos...">
-        <button>Search</button>
-      </form>
-      <h5>Video results displayed below...</h5>
-      <ul>
-          <% for(var i = 0; i < result.length; i++) { %>
-            <li>
-              <h2><%= result[i].title %></h2>
-              <p><%= result[i].description %></p>
-              <% if(result[i].platform == 'youtube') {%>
+<main>
+  <div class="container">
+
+    <div class="col"><%- include ('../partials/message') %></div>
+    
+    <form action="/home" method="POST" id = "searchbox" data-search = "<%= JSON.stringify(result)%>" onsubmit="addloading()">
+      <input type="search" id="query" value = "<%=query%>" name="q" autocomplete="off" placeholder="Find Creative videos...">
+    </form>
+    <div id = "results" class="container-fluid">
+      <div class="row">
+        <% for(var i = 0; i < result.length; i++) { %>
+        <div class="col-md-3">
+          <div class="card">
+            <% if(result[i].platform == 'youtube') {%>
               <a href="https://www.youtube.com/watch?v=<%= result[i].id %>">Watch on YouTube</a>
-              <iframe  src="https://www.youtube.com/embed/<%= result[i].id %>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+              <iframe height = "300px" src="https://www.youtube.com/embed/<%= result[i].id %>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
               <%}%>
               <% if(result[i].platform == 'vimeo') {%>
-              
+                <a href="<%= result[i].url %>">Watch on Vimeo</a>
+                <iframe height = "300px" src="https://player.vimeo.com/video/<%= result[i].id.split("/")[2] %>"  height="300" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
               <%}%>
-            </li>
-          <% } %>
-      </ul>
+            <div class="card-body">
+              <h5 class="card-title text-truncate"><%= result[i].title %></h5>
+              <p class="card-text text-truncate"><%= result[i].description %></p>
+              <form action="/details" method = "POST">
+                <button  class="btn btn-primary" name = "b" value = "<%= JSON.stringify(result[i])%>">
+                  <h7>View</h7>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <% } %>
+      </div>
     </div>
-  </main>
-</head>
+  </div>
+</main>
+<style>
+  #results {
+    padding-top:10%; 
+    
+    transition: opacity linear 1s;
+  }
+  #searchbox {
+    top:25px; 
+    width:50%; 
+    position: sticky;
+    z-index: 9;
+    left: 50%;
+    transform: translate(-50%, 0);
+    transition: top 3s ease 0s; /* only transition top property */
+    
+  }
+  #query  {
+    background-color: black;
+    opacity: 80%;
+    text-align: left;
+    width:90%;
+    border-width: .1em;
+    border-color:black; 
+    border-radius: 1em;
+    padding:1em;
+    color:white; 
+    height:5vh; 
+    transition: width ease-in 0.5s;
+    transition: color ease-in 0.5s;
+    transition: border-color ease-in 0.5s;
+    opacity: 100%;
+  }
+
+  #query:focus {
+    width:100%;
+    color:rgb(255, 0, 115);
+    border-color:rgb(255,0,115);
+
+  }
+
+  #search input:focus {
+    height:10vh; 
+    border-color:blue; 
+
+  }
+  #search button {
+    width:5%; 
+    color:white; 
+    font-weight: bolder;
+    background-color: transparent;
+    border:none; 
+    background-color: rgba(0, 0, 0, 0.39);
+    border-radius: 2em;
+  }
+  button:hover {
+    opacity: 75%;
+  }
+  .card {
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  .card .card-body {
+    pointer-events: none;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    color: #fff;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  .card .btn {
+    pointer-events: all;
+    position: relative;
+    float: left;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .col-md-3 {
+    position: relative;
+    z-index: 0;
+    padding-top:10px;
+    padding-bottom:10px; 
+  }
+</style>
+
 <%- include ('../partials/footer') %>
