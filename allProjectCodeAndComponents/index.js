@@ -406,7 +406,9 @@ app.get('/home', (req, res) => {
     res.render("pages/home.ejs",{result});
 });
 
-
+app.post('/details', (req, res) => {
+  console.log(req.body)
+})
 
 // "pastVideos" page routes
 app.get('/pastVideos', (req, res) => {
