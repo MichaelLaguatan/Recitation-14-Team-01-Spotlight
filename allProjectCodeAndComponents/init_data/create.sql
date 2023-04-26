@@ -11,6 +11,12 @@ CREATE TABLE platforms(
 );
 
 DROP TABLE IF EXISTS videos CASCADE;
+CREATE TABLE platforms(
+    platform_id SERIAL PRIMARY KEY NOT NULL,
+    platform VARCHAR(20)
+);
+
+DROP TABLE IF EXISTS videos CASCADE;
 CREATE TABLE videos(
     video_id SERIAL PRIMARY KEY NOT NULL,
     title text,

@@ -1,0 +1,312 @@
+<style
+  media=""
+  data-href="https://fonts.googleapis.com/icon?family=Material+Icons"
+>
+  /* fallback */
+  @font-face {
+    font-family: "Material Icons";
+    font-style: normal;
+    font-weight: 400;
+    src: url(https://fonts.gstatic.com/s/materialicons/v140/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2)
+      format("woff2");
+  }
+
+  .material-icons {
+    font-family: "Material Icons";
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+  }
+</style>
+
+  <div id = "BigSearch">
+    <!-- page content + floating button -->
+    <div class="container p-y-md">
+      <div class="control">
+        <div class="btn-material"></div>
+        <i class="material-icons icon-material-search">search</i>
+      </div>
+    </div>
+
+    <!-- full screen form controls -->
+    <i class="icon-close material-icons">close</i>
+    <div class="search-input">
+      <form action="/home" method="POST" id="search" onsubmit="addloading()">
+        <input
+          type="search"
+          
+          name="q"
+          autocomplete="off"
+          placeholder="Find Creative videos..."
+        />
+      </form>
+    </div>
+  </div>
+  <div id = "loading">
+    <svg class="ip" viewBox="0 0 256 128" width="256px" height="128px" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="grad1" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#5ebd3e" />
+          <stop offset="33%" stop-color="#ffb900" />
+          <stop offset="67%" stop-color="#f78200" />
+          <stop offset="100%" stop-color="#e23838" />
+        </linearGradient>
+        <linearGradient id="grad2" x1="1" y1="0" x2="0" y2="0">
+          <stop offset="0%" stop-color="#e23838" />
+          <stop offset="33%" stop-color="#973999" />
+          <stop offset="67%" stop-color="#009cdf" />
+          <stop offset="100%" stop-color="#5ebd3e" />
+        </linearGradient>
+      </defs>
+      <g fill="none" stroke-linecap="round" stroke-width="16">
+        <g class="ip__track" stroke="#ddd">
+          <path d="M8,64s0-56,60-56,60,112,120,112,60-56,60-56"/>
+          <path d="M248,64s0-56-60-56-60,112-120,112S8,64,8,64"/>
+        </g>
+        <g stroke-dasharray="180 656">
+          <path class="ip__worm1" stroke="url(#grad1)" stroke-dashoffset="0" d="M8,64s0-56,60-56,60,112,120,112,60-56,60-56"/>
+          <path class="ip__worm2" stroke="url(#grad2)" stroke-dashoffset="358" d="M248,64s0-56-60-56-60,112-120,112S8,64,8,64"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+  <style>
+    #loading {
+      visibility: hidden;
+      transition: opacity linear .2s;
+      opacity: 0%;
+      z-index:100; 
+      top:0; 
+      left:0; 
+      position: fixed;
+      height:100%; 
+      width:100%; 
+      background-color: black;
+    }
+    .ip {
+      width:100%; 
+      height:100%; 
+       
+    }
+    .ip__track {
+      stroke: hsl(var(--hue),90%,90%);
+      transition: stroke var(--trans-dur);
+    }
+    .ip__worm1,
+    .ip__worm2 {
+      animation: worm1 2s linear infinite;
+    }
+    .ip__worm2 {
+      animation-name: worm2;
+    }
+    
+    /* Dark theme */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: hsl(var(--hue),90%,5%);
+        --fg: hsl(var(--hue),90%,95%);
+      }
+      .ip__track {
+        stroke: hsl(var(--hue),90%,15%);
+      }
+    }
+    
+    /* Animation */
+    @keyframes worm1 {
+      from {
+        stroke-dashoffset: 0;
+      }
+      50% {
+        animation-timing-function: steps(1);
+        stroke-dashoffset: -358;
+      }
+      50.01% {
+        animation-timing-function: linear;
+        stroke-dashoffset: 358;
+      }
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+    @keyframes worm2 {
+      from {
+        stroke-dashoffset: 358;
+      }
+      50% {
+        stroke-dashoffset: 0;
+      }
+      to {
+        stroke-dashoffset: -358;
+      }
+    }
+    </style>
+    <script>
+      function addloading() {
+        console.log("it went through ")
+        document.getElementById("loading").style.visibility = "visible"
+        document.getElementById("loading").style.opacity = "100%"
+      }
+    </script>
+<style>
+  #BigSearch {
+    position: relative;
+    z-index: 99;
+  }
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    font-family: "Roboto", sans-serif;
+    color: #2d2d2d;
+    letter-spacing: 0.2px;
+    /* Search Active */
+  }
+  body.search-active {
+    overflow: hidden;
+  }
+  body.search-active .search-input {
+    opacity: 1;
+
+    transform: none;
+    pointer-events: all;
+  }
+  body.search-active .icon-close {
+    opacity: 1;
+    transform: rotate(-90deg);
+  }
+  body.search-active .control {
+    cursor: default;
+  }
+  body.search-active .control .btn-material {
+    transform: scale(70);
+  }
+  body.search-active .control .icon-material-search {
+    opacity: 0;
+  }
+
+  /* Close Icon */
+  .icon-close {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 70px;
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+  }
+  .icon-close:hover {
+    transform: rotate(0);
+  }
+
+  /* Search Input */
+  .search-input {
+    height: 80px;
+    position: fixed;
+    top: 50%;
+    left: 50px;
+    margin-top: -40px;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(40px, 0);
+    transition: all 0.3s ease-in-out;
+  }
+  .search-input input {
+    color: #fff;
+    font-size: 54px;
+    border: 0;
+    background: transparent;
+    -webkit-appearance: none;
+    box-sizing: border-box;
+    outline: 0;
+    font-weight: 200;
+  }
+  .search-input ::-webkit-input-placeholder {
+    color: #eee;
+  }
+  .search-input :-moz-placeholder {
+    color: #eee;
+    opacity: 1;
+  }
+  .search-input ::-moz-placeholder {
+    color: #eee;
+    opacity: 1;
+  }
+  .search-input :-ms-input-placeholder {
+    color: #eee;
+  }
+
+  /* Container */
+  .container {
+    padding-right: 50px;
+    padding-left: 50px;
+    position: relative;
+  }
+  .container.container-dark {
+    background: #22313f;
+    color: #fff;
+  }
+
+  /* Control btn */
+  .control {
+    cursor: pointer;
+  }
+  .control .btn-material {
+    position: absolute;
+    top: -30px;
+    width: 60px;
+    height: 60px;
+    right: -54px;
+    border-radius: 100%;
+    box-sizing: border-box;
+    background: #e91e63;
+    outline: 0;
+    transform-origin: 50%;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .control .btn-material:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  }
+  .control .icon-material-search {
+    color: #fff;
+    position: absolute;
+    top: -10px;
+    right: -36px; 
+     
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  /* Utilities */
+  .p-y-md {
+
+  }
+
+  /* Typo */
+  h1,
+  h2 {
+    font-weight: 300;
+  }
+</style>
+<script>
+  $(".control").click(function () {
+    $("body").addClass("search-active");
+    $(".input-search").focus();
+  });
+
+  $(".icon-close").click(function () {
+    $("body").removeClass("search-active");
+  });
+</script>
