@@ -47,3 +47,4 @@ CREATE TABLE videos_to_tags(
     FOREIGN KEY (video_id) REFERENCES videos (video_id),
     FOREIGN KEY (tag_id) REFERENCES tags (tag_id)
 );
+

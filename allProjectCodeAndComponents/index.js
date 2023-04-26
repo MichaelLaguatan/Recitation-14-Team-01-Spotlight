@@ -86,13 +86,21 @@ const userData = {
 // *****************************************************
 
 //starting redirect
-app.get('/', (req, res) => {
-    res.redirect('/welcome');
+app.get('/', async (req, res) => {
+  res.render('pages/welcome', {page_name:"welcome"});
+  // try {
+  //   const tags = await db.any('SELECT tag FROM tags ORDER BY tag ASC');
+  //   console.log("Successfully fetched tags");
+  //   res.render('pages/welcome', { tags });
+  // } catch (error) {
+  //   console.log('There was an error fetching tags');
+  //   console.log(error);
+  // }
 });
 
 app.get('/welcome', (req,res)=>
 {
-  res.render('pages/welcome.ejs',{page_name:"welcome"})
+  res.redirect('/');
 })
 
 // "register" page routes
@@ -234,10 +242,7 @@ async function addVideo(title, platform, description, link){
     .catch(function(err){
       return console.log(err);
     });
-  })
-  .catch(function(err){
-    return console.log(err + " (Vincent did a goofy on addVideo D:)");
-  });
+ 
 }
 
 /*
@@ -288,6 +293,7 @@ async function addTag(tag, video_id){
 
   
 }
+
 
 /*
   Intended Usage:
@@ -554,6 +560,21 @@ app.get('/pastVideos', (req, res) => {
   }
 
 });
+
+// get tags and post them onto the page
+// app.get('/tags', (req, res) => {
+//   pool.query('SELECT tag FROM tags ORDER BY tag ASC', (err, results) => {
+//     if(err)
+//     {
+//       console.log("There was an error fetching tags");
+
+//     }
+//     else
+//     {
+//       const tags = result.rows.map(row => row.tag);
+      
+//     }
+// });
 
 //Lab11 unit testing route
 app.get('/welcometest', (req, res) => {
