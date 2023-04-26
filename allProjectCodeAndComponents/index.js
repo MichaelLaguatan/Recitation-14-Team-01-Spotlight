@@ -11,6 +11,11 @@ const axios = require('axios'); // To make HTTP requests from our server. We'll 
 const { queryResult } = require('pg-promise');
 const json = require('body-parser/lib/types/json');
 
+
+
+
+
+
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
 // *****************************************************
@@ -85,13 +90,10 @@ app.get('/', (req, res) => {
     res.redirect('/welcome');
 });
 
-
-
 app.get('/welcome', (req,res)=>
 {
   res.render('pages/welcome.ejs',{page_name:"welcome"})
 })
-
 
 // "register" page routes
 app.get('/register', (req, res) => {
@@ -115,19 +117,19 @@ app.post('/register', async (req, res) => {
     .catch(err => {
         console.log('Registration failed');
         console.log(err);
-        res.redirect('/register');
+        res.render('pages/register.ejs', {message: 'An account with that username already exists.'});
+//         res.render("pages/login.ejs", {
+// message: 'Wrong password, please try again',
+//         });
     });
 });
-
-
 
 /*
   Intended Usage: 
   This function will give a table of videos that are tied by the users_to_videos table
   when given a username.
 */
-function queryAccountVideos(username){
-  var output;
+async function queryAccountVideos(username){
   var query = `
   SELECT 
     videos.video_id, 
@@ -139,24 +141,21 @@ function queryAccountVideos(username){
   FULL JOIN videos 
   ON users_to_videos.video_id = videos.video_id 
   WHERE users_to_videos.username = '${username}';`
-  db.any(query)
-    .then(function(data){ 
-      output = data; 
-      return;
+  return await db.any(query)
+    .then(function(data){
+      return data;
+
     })
     .catch(function(err){
-      output = null;
       return console.log(err + " (Vincent did a goofy D:)");
     });
-  return output;
 }
 
 /*
   Intended Usage:
   This function will give a json file of all the video's tags when given a video_id.
 */
-function queryVideoTags(video_id){
-  var output;
+async function queryVideoTags(video_id){
   var query = `
   SELECT 
     tags.name, 
@@ -165,69 +164,147 @@ function queryVideoTags(video_id){
   FULL JOIN tags 
   ON videos_to_tags.tag_id = tags.tag_id 
   WHERE videos_to_tags.video_id = '${video_id}';`
-  db.any(query)
-    .then(function(data){ 
-      output = data; 
-      return;
+  return await db.any(query)
+    .then(function(data){
+      return data;
     })
     .catch(function(err){
-      output = null;
       return console.log(err + " (Vincent did a goofy on queryVideoTags D:)");
     });
-  return output;
+}
+
+/*
+  Intended Usage:
+  This function will give a json file of all the tags that exist in the database.
+*/
+async function allTags(){
+  var query = `
+  SELECT 
+    tags.tag_id 
+  FROM tags;`
+  return await db.any(query)
+    .then(function(data){
+      return data;
+    })
+    .catch(function(err){
+      return console.log(err + " (Vincent did a goofy on allTags D:)");
+    });
+}
+
+/*
+  Intended Usage:
+  This function will give a json file of all the videos (all columns of the videos table) 
+  in the database that have a tag matching the input.
+*/
+async function queryByTags(tag){
+  var query = `
+  SELECT 
+    videos.*
+  FROM videos
+  FULL JOIN videos_to_tags
+  ON videos.video_id = videos_to_tags.video_id
+  FULL JOIN tags
+  ON videos_to_tags.tag_id = tags.tag_id
+  WHERE tags.tag_id = '${tag}';`
+  return await db.any(query)
+    .then(function(data){
+      return data;
+    })
+    .catch(function(err){
+      return console.log(err + " (Vincent did a goofy on queryByTags D:)");
+    });
 }
 
 /*
   Intended Usage:
   This function will add to the table "videos" a set of inputted data.
-  Said data is (string, int, int, string)
+  Said data is (string, int, string, string)
   Furthermore, this will return the video's id.
 */
-function addVideo(title, release, views, link){
-  var query = `INSERT INTO "videos" (title, release, views, link)
-  VALUES ($1, $2, $3, $4)
-  RETURNING *;`;
-  db.any(query, [title, release, views, link])
+function addVideo(title, platform, description, link){
+  var movie_id = 0;
+  var videoQuery = `INSERT INTO videos (title, platform, description, link) VALUES ('${title}', '${platform}', '${description}', '${link}') RETURNING *;`;
+  db.any(videoQuery)
+  .then(function(data){
+    movie_id = data[0].video_id;
+    var userQuery = `INSERT INTO users_to_videos (username, movie_id) VALUES ('${userData.username}', ${movie_id}) RETURNING *;`;
+    db.any(userQuery)
     .then(function(data){
-      data = data[0].video_id;
-      console.log("Output: " + data);
-      return data;
+      return;
     })
     .catch(function(err){
-      return console.log(err + " (Vincent did a goofy on addVideo D:)");
+      return console.log(err);
     });
+  })
+  .catch(function(err){
+    return console.log(err + " (Vincent did a goofy on addVideo D:)");
+  });
 }
 
 /*
   Intended Usage:
   This function will add to both the tables "videos_to_tags" and "tags" a set of inputted data.
+  Update: The function will query "tags" before insertting, and if the tag already exists, simple associate the video with that tag.
 */
-function addTag(tag, video_id){
-  var query = `INSERT INTO tags (tag) VALUES ($1) RETURNING *;`
-  db.any(query, [tag])
-    .then(function(data){      
-      var secondQuery = `INSERT INTO videos_to_tags (video_id, tag_id) VALUES ($1, $2);`
-      db.any(secondQuery, [video_id, data[0].tag_id])
-        .then(function(){
-          return;
-        })
-        .catch(function(err){
-          return console.log(err + " (Vincent did a goofy on addTag D:)");
-        });      
+async function addTag(tag, video_id){
+  console.log("Received video_id: " + video_id);
+  var existingQuery = `SELECT tag_id FROM tags WHERE tag = $1;`
+  var secondQuery = `INSERT INTO videos_to_tags (video_id, tag_id) VALUES ($1, $2);`
+  db.any(existingQuery, [tag])
+    .then(function(data){
+      if(data[0] == null)
+      {
+        console.log("tag_id for " + [tag] + " doesn't exist");
+        var query = `INSERT INTO tags (tag) VALUES ($1) RETURNING *;`
+        db.any(query, [tag])
+          .then(function(data){      
+            db.any(secondQuery, [video_id, data[0].tag_id])
+              .then(function(){
+                return;
+              })
+              .catch(function(err){
+                return console.log(err + " (addTag secondQuery)");
+              });      
+          })
+          .catch(function(err){
+            return console.log(err + " (addTag query)");
+          });
+      }
+      else
+      {
+        console.log( tag + " exists with the id: " + data[0].tag_id);
+        db.any(secondQuery, [video_id, data[0].tag_id])
+          .then(function(){
+            return;
+          })
+          .catch(function(err){
+            return console.log(err + " (addTag secondQuery)");
+          });
+      }
     })
     .catch(function(err){
-      return console.log(err + " (Vincent did a goofy on addTag D:)");
-    });
+      return console.log(err + " (addTag existingQuery)");
+    })
+
+
+  
 }
 
 /*
   Intended Usage:
   For personal purposes, this function lets Vincent test if the add functions work where they'll later manually test the SQL to see if those work.
   docker exec -it allprojectcodeandcomponents-db-1 psql -U postgres
+  because of how the code works, the front end will need to use async/await on these function calls if they care about the output of the function.
 */
-function testAdd(){
-  addTag("Comedy", addVideo("Best Video Ever", 2023, 9001, "https://bestvideoever.com"));
-  addTag("Tragedy", addVideo("Worst Video Ever", 2023, 2, "https://worstvideoever.com"));
+async function testAdd(){
+  //either of the following implementations work.
+  
+  //this one may be better for the style of "video page" and "add tag" feature we were talking about
+  var receivedId = await addVideo("Best Video Ever", 0, "Shoutouts to my 2 subscribers", "https://bestvideoever.com");
+  addTag("Comedy", receivedId);
+
+  //this one is better if we know the tag ahead of time and just want to automagically tag stuff based on API dev's work.
+  addTag("Tragedy", await addVideo("Worst Video Ever", 1, "How do I have 1,000,000 subscribers?", "https://worstvideoever.com"));
 }
 
 app.get('/test', (req, res)=> {
@@ -239,8 +316,6 @@ app.get('/login', (req, res) => {
     res.render("pages/login",{page_name:"login"});
     //res.json({status: 'success', message: 'Logged in successfully'});
 });
-
-
 
 app.post('/login', (req, res) => {
     var username = req.body.username;
@@ -259,19 +334,20 @@ app.post('/login', (req, res) => {
         }else{
             //throw Error("Incorrect username or password");
             console.log("Incorrect username or password")
-            res.redirect('/login');
+            res.render("pages/login.ejs", {
+              message: 'Wrong password, please try again',
+            });
         }
        
 
     })
     .catch(err => {
         console.log(err);
-        res.redirect('/register');
+        res.render("pages/register.ejs", {
+          message: 'User does not exist.',
+        });
     });
 });
-
-
-
 
 app.get('/test', (req, res) => {
   res.render("pages/test",{page_name:"test"});
@@ -295,7 +371,6 @@ await fetch(url)
     .then(response => response.json())
     .then(data => {
      result = data.items; 
-    
     })
     .catch(error => console.error(error));
   return result; 
@@ -358,43 +433,12 @@ async function queryAllstandard(query) {
   }
    return combined; 
 }
-
- 
-
-
-
-
-
-
-// // Authentication Middleware
-
-// const auth = (req, res, next) => {
-//   if (!req.session.user) {
-//     // Default to login page.
-//     return res.redirect('/login');
-    
-//   }
-//   next();
-// };
-
-// // Authentication Required
-// app.use(auth);
-
-
-
-
-
-// global variable to save last search when home page rendered
-var lastSearch = [];
-
 // youtube works 
 
 // "home" page routs
 app.post('/home', (req, res) => {
-  console.log(req.body)
   if(req.body.q != undefined && req.body.q != "" && req.body.q != " ") {
     queryAllstandard(req.body.q).then((result) => {
-      console.log(result)
       lastSearch = result;
       res.render('pages/home', { result,page_name:"home",query:req.body.q});
     })
@@ -405,40 +449,43 @@ app.post('/home', (req, res) => {
   }
 
 
-})
+
+});
 app.get('/home', (req, res) => {
   let result = []; 
     res.render("pages/home.ejs",{result,page_name:"home",query:"" });
 });
 
-
-
-
-
-
-// "details" page routes
-// app.get('/details', (req, res) => {
-//   res.render("pages/details");
-// });
-
 app.post('/details', (req, res) => {
-  console.log(req.body);
   let result = JSON.parse(req.body.b);
+  const query = `SELECT * FROM videos WHERE videos.title = '${result.title}' LIMIT 1;`;
+  db.one(query)
+  .then((data) => {
+    console.log(data);
+  })
+  .catch((err) => {
+  if (result.platform == 'youtube'){
+    addVideo(result.title, 1, result.description, result.url);
+  } else if (result.platform == 'vimeo') {
+    addVideo(result.title, 2, result.description, result.url);
+  }
+  });
   res.render('pages/details', { result,page_name:"details" });
 })
-
-
-
-
-
-// "pastVideos" page routes
-app.get('/pastVideos', (req, res) => {
-  res.render("pages/pastVideos.ejs",{page_name:"history"});
-});
-
 // "profile" page routes
 app.get('/profile', (req, res) => {
-  res.render("pages/profile", {user: userData,page_name:"profile"});
+
+  const userExists = req.session.user;
+  if(!req.session.user) 
+  {
+    res.render('pages/login', {message: 'You are not logged in.', page_name:"login"});
+  }
+  else
+  {
+    res.render("pages/profile", {user: userData,page_name:"profile"});
+  }
+   
+
 });
 
 app.post('/usernameChange', (req, res) => {
@@ -468,11 +515,35 @@ app.post('/passwordChange', async (req, res) => {
 
 // logout routes
 app.get("/logout", (req, res) => {
-  console.log("User logged out successfully")
-  req.session.destroy();
-  res.render("pages/login.ejs", {
-    message: 'logged out successfully',
-    page_name:"login"
+
+  if(req.session.user)
+  {
+    console.log("User logged out successfully")
+    req.session.destroy();
+    res.render("pages/login.ejs", {
+      message: 'logged out successfully',
+      page_name:"login"
+    });
+  }
+  else
+  {
+    res.render('pages/login', {message: 'You are not logged in.', 
+    page_name:"login"});
+  }
+
+});
+
+//PastVideos routes
+app.get('/pastVideos', (req, res) => {
+  var query = `SELECT * FROM videos FULL JOIN users_to_videos 
+  ON users_to_videos.movie_id = videos.video_id 
+  WHERE users_to_videos.username = '${userData.username}';`;
+  db.any(query)
+    .then((videos) => {
+      res.render('pages/pastVideos', {videos, page_name:"history"});
+    })
+    .catch((err) =>{
+      res.render('pages/pastVideos', {videos: [], page_name:"history"});
   });
 });
 

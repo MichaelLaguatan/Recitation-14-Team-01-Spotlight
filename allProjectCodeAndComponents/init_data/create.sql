@@ -4,13 +4,20 @@ CREATE TABLE users(
     password CHAR(60) NOT NULL
 );
 
+DROP TABLE IF EXISTS platforms CASCADE;
+CREATE TABLE platforms(
+    platform_id SERIAL PRIMARY KEY NOT NULL,
+    platform VARCHAR(20)
+);
+
 DROP TABLE IF EXISTS videos CASCADE;
 CREATE TABLE videos(
     video_id SERIAL PRIMARY KEY NOT NULL,
     title text,
-    release INT,
-    views INT,
-    link text
+    platform INT,
+    description text,
+    link text,
+    FOREIGN KEY (platform) REFERENCES platforms (platform_id)
 );
 
 DROP TABLE IF EXISTS tags CASCADE;
