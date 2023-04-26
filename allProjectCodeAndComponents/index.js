@@ -234,10 +234,6 @@ async function addVideo(title, platform, description, link){
     .catch(function(err){
       return console.log(err);
     });
-  })
-  .catch(function(err){
-    return console.log(err + " (Vincent did a goofy on addVideo D:)");
-  });
 }
 
 /*
