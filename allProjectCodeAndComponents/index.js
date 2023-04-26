@@ -129,28 +129,33 @@ app.post('/register', async (req, res) => {
   This function will give a table of videos that are tied by the users_to_videos table
   when given a username.
 */
-function queryAccountVideos(username){
-  var output = [];
-  var query = `SELECT * FROM videos FULL JOIN users_to_videos 
-  ON users_to_videos.movie_id = videos.video_id 
-  WHERE users_to_videos.username = '${username}';`;
-  db.any(query)
-    .then(function(data){ 
-      output = data;
+async function queryAccountVideos(username){
+  var query = `
+  SELECT 
+    videos.video_id, 
+    videos.title, 
+    videos.release, 
+    videos.views, 
+    videos.url  
+  FROM users_to_videos 
+  FULL JOIN videos 
+  ON users_to_videos.video_id = videos.video_id 
+  WHERE users_to_videos.username = '${username}';`
+  return await db.any(query)
+    .then(function(data){
+      return data;
+
     })
     .catch(function(err){
-      output = null;
       return console.log(err + " (Vincent did a goofy D:)");
     });
-    return output;
 }
 
 /*
   Intended Usage:
   This function will give a json file of all the video's tags when given a video_id.
 */
-function queryVideoTags(video_id){
-  var output;
+async function queryVideoTags(video_id){
   var query = `
   SELECT 
     tags.name, 
@@ -159,34 +164,72 @@ function queryVideoTags(video_id){
   FULL JOIN tags 
   ON videos_to_tags.tag_id = tags.tag_id 
   WHERE videos_to_tags.video_id = '${video_id}';`
-  db.any(query)
-    .then(function(data){ 
-      output = data; 
-      return;
+  return await db.any(query)
+    .then(function(data){
+      return data;
     })
     .catch(function(err){
-      output = null;
       return console.log(err + " (Vincent did a goofy on queryVideoTags D:)");
     });
-  return output;
+}
+
+/*
+  Intended Usage:
+  This function will give a json file of all the tags that exist in the database.
+*/
+async function allTags(){
+  var query = `
+  SELECT 
+    tags.tag_id 
+  FROM tags;`
+  return await db.any(query)
+    .then(function(data){
+      return data;
+    })
+    .catch(function(err){
+      return console.log(err + " (Vincent did a goofy on allTags D:)");
+    });
+}
+
+/*
+  Intended Usage:
+  This function will give a json file of all the videos (all columns of the videos table) 
+  in the database that have a tag matching the input.
+*/
+async function queryByTags(tag){
+  var query = `
+  SELECT 
+    videos.*
+  FROM videos
+  FULL JOIN videos_to_tags
+  ON videos.video_id = videos_to_tags.video_id
+  FULL JOIN tags
+  ON videos_to_tags.tag_id = tags.tag_id
+  WHERE tags.tag_id = '${tag}';`
+  return await db.any(query)
+    .then(function(data){
+      return data;
+    })
+    .catch(function(err){
+      return console.log(err + " (Vincent did a goofy on queryByTags D:)");
+    });
 }
 
 /*
   Intended Usage:
   This function will add to the table "videos" a set of inputted data.
-  Said data is (string, int, int, string)
+  Said data is (string, int, string, string)
   Furthermore, this will return the video's id.
 */
-function addVideo(title, platform, description, link){
-  var movie_id = 0;
-  var videoQuery = `INSERT INTO videos (title, platform, description, link) VALUES ('${title}', '${platform}', '${description}', '${link}') RETURNING *;`;
-  db.any(videoQuery)
-  .then(function(data){
-    movie_id = data[0].video_id;
-    var userQuery = `INSERT INTO users_to_videos (username, movie_id) VALUES ('${userData.username}', ${movie_id}) RETURNING *;`;
-    db.any(userQuery)
+async function addVideo(title, platform, description, link){
+  var query = `INSERT INTO "videos" (title, platform, description, link)
+  VALUES ($1, $2, $3, $4)
+  RETURNING *;`;
+  return await db.any(query, [title, platform, description, link])
     .then(function(data){
-      return;
+      data = data[0].video_id;
+      //console.log("Output: " + data);
+      return data;
     })
     .catch(function(err){
       return console.log(err);
@@ -200,33 +243,67 @@ function addVideo(title, platform, description, link){
 /*
   Intended Usage:
   This function will add to both the tables "videos_to_tags" and "tags" a set of inputted data.
+  Update: The function will query "tags" before insertting, and if the tag already exists, simple associate the video with that tag.
 */
-function addTag(tag, video_id){
-  var query = `INSERT INTO tags (tag) VALUES ($1) RETURNING *;`
-  db.any(query, [tag])
-    .then(function(data){      
-      var secondQuery = `INSERT INTO videos_to_tags (video_id, tag_id) VALUES ($1, $2);`
-      db.any(secondQuery, [video_id, data[0].tag_id])
-        .then(function(){
-          return;
-        })
-        .catch(function(err){
-          return console.log(err + " (Vincent did a goofy on addTag D:)");
-        });      
+async function addTag(tag, video_id){
+  console.log("Received video_id: " + video_id);
+  var existingQuery = `SELECT tag_id FROM tags WHERE tag = $1;`
+  var secondQuery = `INSERT INTO videos_to_tags (video_id, tag_id) VALUES ($1, $2);`
+  db.any(existingQuery, [tag])
+    .then(function(data){
+      if(data[0] == null)
+      {
+        console.log("tag_id for " + [tag] + " doesn't exist");
+        var query = `INSERT INTO tags (tag) VALUES ($1) RETURNING *;`
+        db.any(query, [tag])
+          .then(function(data){      
+            db.any(secondQuery, [video_id, data[0].tag_id])
+              .then(function(){
+                return;
+              })
+              .catch(function(err){
+                return console.log(err + " (addTag secondQuery)");
+              });      
+          })
+          .catch(function(err){
+            return console.log(err + " (addTag query)");
+          });
+      }
+      else
+      {
+        console.log( tag + " exists with the id: " + data[0].tag_id);
+        db.any(secondQuery, [video_id, data[0].tag_id])
+          .then(function(){
+            return;
+          })
+          .catch(function(err){
+            return console.log(err + " (addTag secondQuery)");
+          });
+      }
     })
     .catch(function(err){
-      return console.log(err + " (Vincent did a goofy on addTag D:)");
-    });
+      return console.log(err + " (addTag existingQuery)");
+    })
+
+
+  
 }
 
 /*
   Intended Usage:
   For personal purposes, this function lets Vincent test if the add functions work where they'll later manually test the SQL to see if those work.
   docker exec -it allprojectcodeandcomponents-db-1 psql -U postgres
+  because of how the code works, the front end will need to use async/await on these function calls if they care about the output of the function.
 */
-function testAdd(){
-  addTag("Comedy", addVideo("Best Video Ever", 2023, 9001, "https://bestvideoever.com"));
-  addTag("Tragedy", addVideo("Worst Video Ever", 2023, 2, "https://worstvideoever.com"));
+async function testAdd(){
+  //either of the following implementations work.
+  
+  //this one may be better for the style of "video page" and "add tag" feature we were talking about
+  var receivedId = await addVideo("Best Video Ever", 0, "Shoutouts to my 2 subscribers", "https://bestvideoever.com");
+  addTag("Comedy", receivedId);
+
+  //this one is better if we know the tag ahead of time and just want to automagically tag stuff based on API dev's work.
+  addTag("Tragedy", await addVideo("Worst Video Ever", 1, "How do I have 1,000,000 subscribers?", "https://worstvideoever.com"));
 }
 
 app.get('/test', (req, res)=> {

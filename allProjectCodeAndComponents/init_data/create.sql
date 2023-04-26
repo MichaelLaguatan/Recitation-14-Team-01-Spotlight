@@ -4,6 +4,12 @@ CREATE TABLE users(
     password CHAR(60) NOT NULL
 );
 
+DROP TABLE IF EXISTS platforms CASCADE;
+CREATE TABLE platforms(
+    platform_id SERIAL PRIMARY KEY NOT NULL,
+    platform VARCHAR(20)
+);
+
 DROP TABLE IF EXISTS videos CASCADE;
 CREATE TABLE platforms(
     platform_id SERIAL PRIMARY KEY NOT NULL,
