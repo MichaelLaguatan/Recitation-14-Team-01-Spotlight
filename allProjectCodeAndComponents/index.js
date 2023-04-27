@@ -85,17 +85,19 @@ const userData = {
 // <!-- Section 5 : API Routes -->
 // *****************************************************
 
+
 //starting redirect
-app.get('/', async (req, res) => {
-  res.render('pages/welcome', {page_name:"welcome"});
-  // try {
-  //   const tags = await db.any('SELECT tag FROM tags ORDER BY tag ASC');
-  //   console.log("Successfully fetched tags");
-  //   res.render('pages/welcome', { tags });
-  // } catch (error) {
-  //   console.log('There was an error fetching tags');
-  //   console.log(error);
-  // }
+// add async after '/', before (req, res) when modifying the tags
+app.get('/',  async (req, res) => { 
+  // res.render('pages/welcome', {page_name:"welcome"});
+  try {
+    var tags = await allTags();
+    console.log("Successfully fetched tags");
+    res.render('pages/welcome', { tags }, {page_name:"welcome"});
+  } catch (error) {
+    console.log('There was an error fetching tags');
+    console.log(error);
+  }
 });
 
 app.get('/welcome', (req,res)=>
@@ -185,18 +187,15 @@ async function queryVideoTags(video_id){
   Intended Usage:
   This function will give a json file of all the tags that exist in the database.
 */
-async function allTags(){
-  var query = `
-  SELECT 
-    tags.tag_id 
-  FROM tags;`
-  return await db.any(query)
-    .then(function(data){
-      return data;
-    })
-    .catch(function(err){
-      return console.log(err + " (Vincent did a goofy on allTags D:)");
-    });
+async function allTags() {
+  try {
+    const query = 'SELECT tags.tag FROM tags ORDER BY tag ASC;';
+    const data = await db.any(query);
+    return data.map(tags => tags.tag); // Modify the returned data as needed
+  } catch (err) {
+    console.log(err + " (Vincent did a goofy on allTags D:)");
+    throw err;
+  }
 }
 
 /*
@@ -339,8 +338,8 @@ app.post('/login', (req, res) => {
         }else{
             //throw Error("Incorrect username or password");
             console.log("Incorrect username or password")
-            res.render("pages/login.ejs", {
-              message: 'Wrong password, please try again',
+            res.render("pages/login.ejs", { 
+              message: 'Wrong password, please try again', 
             });
         }
        

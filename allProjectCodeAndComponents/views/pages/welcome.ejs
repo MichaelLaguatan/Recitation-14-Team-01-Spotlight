@@ -6,6 +6,14 @@
     <div class="col"><%- include ('../partials/message') %></div>
     <h2>Welcome to Spotlight!</h2>
     <h5>Browse Tags:</h5>
+    <div class="tags-container">
+      <h2>Tags</h2>
+      <ul class="tags-list">
+        <% tags.forEach(tag => { %>
+          <li><a href="/tags/<%= tag %>"><%= tag %></a></li>
+        <% }); %>
+      </ul>
+    </div>
 </main>
 
 <%- include ('../partials/footer') %>

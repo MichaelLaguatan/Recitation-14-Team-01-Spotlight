@@ -32,6 +32,8 @@ CREATE TABLE tags(
     tag VARCHAR(20)
 );
 
+
+
 DROP TABLE IF EXISTS users_to_videos CASCADE;
 CREATE TABLE users_to_videos(
     username VARCHAR(50),
