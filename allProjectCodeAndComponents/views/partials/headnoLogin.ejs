@@ -108,6 +108,7 @@
         <li <% if (page_name === 'welcome') { %>class="active" <% } %>><a class="bi bi-emoji-smile-fill" href="/welcome">Welcome</a></li>
         <li <% if (page_name === 'home') { %>class="active" <% } %>><a class="bi bi-house-door-fill" href="/home">Home</a></li>
         <li <% if (page_name === 'login') { %>class="active" <% } %>><a class="bi bi-door-open-fill" href="/login">Login</a></li>
+        <%- include ('../partials/search') %>
     </ul>
     
     <style>
