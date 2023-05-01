@@ -230,15 +230,16 @@ async function queryByTags(tag){
   Said data is (string, int, string, string)
   Furthermore, this will return the video's id.
 */
-async function addVideo(title, platform, description, link){
-  var query = `INSERT INTO "videos" (title, platform, description, link)
-  VALUES ($1, $2, $3, $4)
-  RETURNING *;`;
-  return await db.any(query, [title, platform, description, link])
+function addVideo(title, platform, description, link){
+  var movie_id = 0;
+  var videoQuery = `INSERT INTO videos (title, platform, description, link) VALUES ('${title}', '${platform}', '${description}', '${link}') RETURNING *;`;
+  db.any(videoQuery)
+  .then(function(data){
+    movie_id = data[0].video_id;
+    var userQuery = `INSERT INTO users_to_videos (username, movie_id) VALUES ('${userData.username}', ${movie_id}) RETURNING *;`;
+    db.any(userQuery)
     .then(function(data){
-      data = data[0].video_id;
-      //console.log("Output: " + data);
-      return data;
+      return;
     })
     .catch(function(err){
       return console.log(err);
@@ -546,26 +547,17 @@ app.get("/logout", (req, res) => {
 
 //PastVideos routes
 app.get('/pastVideos', (req, res) => {
-  var loggedIn = req.session.user;
-  if(req.session.user)
-  {
 
-    var query = `SELECT * FROM videos FULL JOIN users_to_videos 
-    ON users_to_videos.movie_id = videos.video_id 
-    WHERE users_to_videos.username = '${userData.username}';`;
-    db.any(query)
-      .then((videos) => { 
-        res.render('pages/pastVideos', {videos, page_name:"history"});
-      })
-      .catch((err) =>{
-        res.render('pages/pastVideos', {videos: [], page_name:"history"});
-    });
-  }
-  else
-  {
-    res.render('pages/login', {message: 'Please login to access your video history.', page_name:"login"});
-  }
-
+  var query = `SELECT * FROM videos FULL JOIN users_to_videos 
+  ON users_to_videos.movie_id = videos.video_id 
+  WHERE users_to_videos.username = '${userData.username}';`;
+  db.any(query)
+    .then((videos) => {
+      res.render('pages/pastVideos', {videos, page_name:"history"});
+    })
+    .catch((err) =>{
+      res.render('pages/pastVideos', {videos: [], page_name:"history"});
+  });
 });
 
 // get tags and post them onto the page

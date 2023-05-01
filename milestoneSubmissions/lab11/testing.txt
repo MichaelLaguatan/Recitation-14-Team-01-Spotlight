@@ -1,0 +1,13 @@
+
+
+Lab 11
+
+TO RUN THESE TESTS GO TO "docker-compose.yaml" and change "command: 'npm start'" to "command: 'npm run testandrun'"
+IF IT IS NOT WORKING THEN RUN "docker compose down -v" THEN "docker compose up"
+
+Create 1 document per team, within the milestones folder in the project directory, that describes how, at least, 3 features within your finished product will be tested.
+The test plans should include specific test cases (user acceptance test cases) that describe the data and the user activity that will be executed in order to verify proper functionality of the feature.
+The test plans should include a description of the test data that will be used to test the feature.
+The test plans should include a description of the test environment that will be used to test the feature.
+The test plans should include a description of the test results that will be used to test the feature.
+The test plan should include information about the user acceptance testers.
