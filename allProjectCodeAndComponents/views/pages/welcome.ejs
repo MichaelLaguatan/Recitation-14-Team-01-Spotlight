@@ -9,9 +9,9 @@
     <div class="col"><%- include ('../partials/message') %></div>
     <h2>Welcome to Spotlight!</h2>
     <h5>Browse Tags:</h5>
-    <div class="somethingelse">
+    <div class="tag-container">
       <h2>Tags</h2>
-      <ul class="something">
+      <ul class="tag">
         <% tags.forEach(tag => { %>
           <div class="card card-body">
             <a href="/home/<%= tag %>"><%= tag %></a>
@@ -22,20 +22,23 @@
   </div>
 </main>
 <style>
-   .card {
-    position: relative;
-    background-color: rgba(0, 0, 0, 0.484);
+   .tag-container {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 10px;
   }
-  .card .card-body {
+  .tag
+  {
     pointer-events: none;
-    top: 0;
+    position:relative;
+    top: 19;
     left: 0;
     right: 0;
     bottom: 0;
-    color: #fff;
+    color: #ff1111a0;
     padding: 20px;
-    background-color: rgba(0, 0, 0, 0.5);
   }
+
 </style>
 
 <%- include ('../partials/footer') %>

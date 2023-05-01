@@ -244,9 +244,11 @@ function addVideo(title, platform, description, link){
     .catch(function(err){
       return console.log(err);
     });
- 
+  })
+  .catch(function(err){
+    return console.log(err + " (Vincent did a goofy on addVideo D:)");
+  });
 }
-
 /*
   Intended Usage:
   This function will add to both the tables "videos_to_tags" and "tags" a set of inputted data.
@@ -307,16 +309,55 @@ async function testAdd(){
   //either of the following implementations work.
   
   //this one may be better for the style of "video page" and "add tag" feature we were talking about
-  var receivedId = await addVideo("Best Video Ever", 0, "Shoutouts to my 2 subscribers", "https://bestvideoever.com");
-  addTag("Comedy", receivedId);
+  //var receivedId = await addVideo("Best Video Ever", 0, "Shoutouts to my 2 subscribers", "https://bestvideoever.com");
+  addTag("Comedy", 0);
 
   //this one is better if we know the tag ahead of time and just want to automagically tag stuff based on API dev's work.
-  addTag("Tragedy", await addVideo("Worst Video Ever", 1, "How do I have 1,000,000 subscribers?", "https://worstvideoever.com"));
+  //addTag("Tragedy", await addVideo("Worst Video Ever", 1, "How do I have 1,000,000 subscribers?", "https://worstvideoever.com"));
+
+  
+  addTag("Tragedy", 1);
+  addTag("Action", 2);
+  addTag("Drama", 3);
+  addTag("Sci-Fi", 4);
+  addTag("Adventure", 5);
+  addTag("Fantasy", 6);
+  addTag("Crime", 7);
+  addTag("Mystery", 8);
+  addTag("Romance", 9);
+  addTag("Horror", 10);
+  addTag("Animation", 11);
+  addTag("Family", 12);
+  addTag("Thriller", 13);
+  addTag("History", 14);
+  addTag("Biography", 15);
+  addTag("Musical", 16);
+  addTag("Music", 17);
+  addTag("Sport", 18);
+  addTag("War", 19);
+  addTag("Western", 20);
+  addTag("Documentary", 21);
+  addTag("Short", 22);
+  addTag("Experimental", 23);
+  addTag("Independent", 24);
+  addTag("Foreign", 25);
+  addTag("Silent", 26);
+  addTag("Classic", 27);
+  addTag("Superhero", 28)
 }
 
 app.get('/test', (req, res)=> {
   testAdd();
-})
+  loggedIn = req.session.user;
+  res.redirect('/');
+  // result = "scary";
+  // req.body.q = "scary";
+  // queryAllstandard(req.body.q).then((result) => {
+  //   lastSearch = result;
+  //   res.render('pages/home', {loggedIn, result,page_name:"home",query:req.body.q});
+  // });
+  
+});
 
 // "login" page routes
 app.get('/login', (req, res) => {
@@ -409,7 +450,7 @@ async function queryVimeo(query) {
 }
 // returns all data from all websites in a standard form as seen below 
 //{"title":"","description":"","platform":"","url":"","id":""}
-async function queryAllstandard(query, tag) {
+async function queryAllstandard(query) {
 
   var youtuberesult = await queryYoutube(query).then((res) => {return res}); 
   var vimeoresults = await queryVimeo(query).then((res) => {return res}); 
@@ -474,14 +515,18 @@ app.post('/details', (req, res) => {
     console.log(data);
   })
   .catch((err) => {
-  if (result.platform == 'youtube'){
+  if (result.platform == 'youtube')
+  {
+    console.log("Reached this point {YOUTUBE}, havent crashed");
     addVideo(result.title, 1, result.description, result.url);
   } else if (result.platform == 'vimeo') {
+    console.log("Reached this point {VIMEO}, havent crashed");
     addVideo(result.title, 2, result.description, result.url);
   }
   });
-  res.render('pages/details', { result,page_name:"details" });
-})
+  res.render('pages/details', {result,page_name:"details" });
+});
+
 // "profile" page routes
 app.get('/profile', (req, res) => {
 
@@ -560,20 +605,7 @@ app.get('/pastVideos', (req, res) => {
   });
 });
 
-// get tags and post them onto the page
-// app.get('/tags', (req, res) => {
-//   pool.query('SELECT tag FROM tags ORDER BY tag ASC', (err, results) => {
-//     if(err)
-//     {
-//       console.log("There was an error fetching tags");
 
-//     }
-//     else
-//     {
-//       const tags = result.rows.map(row => row.tag);
-      
-//     }
-// });
 
 //Lab11 unit testing route
 app.get('/welcometest', (req, res) => {
