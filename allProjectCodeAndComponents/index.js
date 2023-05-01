@@ -85,19 +85,31 @@ const userData = {
 // <!-- Section 5 : API Routes -->
 // *****************************************************
 
+
 //starting redirect
-app.get('/', (req, res) => {
-    res.redirect('/welcome');
+// add async after '/', before (req, res) when modifying the tags
+app.get('/',  async (req, res) => { 
+  // res.render('pages/welcome', {page_name:"welcome"});
+  try {
+    var loggedIn = req.session.user;
+    var tags = await allTags();
+    console.log("Successfully fetched tags");
+    res.render('pages/welcome', { tags, page_name:"welcome", loggedIn });
+  } catch (error) {
+    console.log('There was an error fetching tags');
+    console.log(error);
+  }
 });
 
 app.get('/welcome', (req,res)=>
 {
-  res.render('pages/welcome.ejs',{page_name:"welcome"})
+  res.redirect('/');
 })
 
 // "register" page routes
 app.get('/register', (req, res) => {
-    res.render('pages/register',{page_name:"register"});
+    var loggedIn = req.session.user;
+    res.render('pages/register',{page_name:"register", loggedIn});
 });
 
 // Register
@@ -177,18 +189,15 @@ async function queryVideoTags(video_id){
   Intended Usage:
   This function will give a json file of all the tags that exist in the database.
 */
-async function allTags(){
-  var query = `
-  SELECT 
-    tags.tag_id 
-  FROM tags;`
-  return await db.any(query)
-    .then(function(data){
-      return data;
-    })
-    .catch(function(err){
-      return console.log(err + " (Vincent did a goofy on allTags D:)");
-    });
+async function allTags() {
+  try {
+    const query = 'SELECT tags.tag FROM tags ORDER BY tag ASC;';
+    const data = await db.any(query);
+    return data.map(tags => tags.tag); // Modify the returned data as needed
+  } catch (err) {
+    console.log(err + " (Vincent did a goofy on allTags D:)");
+    throw err;
+  }
 }
 
 /*
@@ -235,10 +244,7 @@ function addVideo(title, platform, description, link){
     .catch(function(err){
       return console.log(err);
     });
-  })
-  .catch(function(err){
-    return console.log(err + " (Vincent did a goofy on addVideo D:)");
-  });
+ 
 }
 
 /*
@@ -290,6 +296,7 @@ async function addTag(tag, video_id){
   
 }
 
+
 /*
   Intended Usage:
   For personal purposes, this function lets Vincent test if the add functions work where they'll later manually test the SQL to see if those work.
@@ -313,7 +320,8 @@ app.get('/test', (req, res)=> {
 
 // "login" page routes
 app.get('/login', (req, res) => {
-    res.render("pages/login",{page_name:"login"});
+    var loggedIn = req.session.user;
+    res.render("pages/login",{page_name:"login", loggedIn});
     //res.json({status: 'success', message: 'Logged in successfully'});
 });
 
@@ -334,8 +342,8 @@ app.post('/login', (req, res) => {
         }else{
             //throw Error("Incorrect username or password");
             console.log("Incorrect username or password")
-            res.render("pages/login.ejs", {
-              message: 'Wrong password, please try again',
+            res.render("pages/login", { 
+              message: 'Incorrect username or password, please try again', page_name:"login"
             });
         }
        
@@ -401,7 +409,7 @@ async function queryVimeo(query) {
 }
 // returns all data from all websites in a standard form as seen below 
 //{"title":"","description":"","platform":"","url":"","id":""}
-async function queryAllstandard(query) {
+async function queryAllstandard(query, tag) {
 
   var youtuberesult = await queryYoutube(query).then((res) => {return res}); 
   var vimeoresults = await queryVimeo(query).then((res) => {return res}); 
@@ -437,23 +445,25 @@ async function queryAllstandard(query) {
 
 // "home" page routs
 app.post('/home', (req, res) => {
+  var loggedIn = req.session.user;
   if(req.body.q != undefined && req.body.q != "" && req.body.q != " ") {
     queryAllstandard(req.body.q).then((result) => {
       lastSearch = result;
-      res.render('pages/home', { result,page_name:"home",query:req.body.q});
+      res.render('pages/home', {loggedIn, result,page_name:"home",query:req.body.q});
     })
   } else {
     console.log("not defined")
     let result = lastSearch; 
-    res.render('pages/home', { result, page_name:"home",query:req.body.q});
+    res.render('pages/home', {loggedIn, result, page_name:"home",query:req.body.q});
   }
 
 
 
 });
 app.get('/home', (req, res) => {
+  var loggedIn = req.session.user;
   let result = []; 
-    res.render("pages/home.ejs",{result,page_name:"home",query:"" });
+    res.render("pages/home.ejs",{loggedIn, result,page_name:"home",query:"" });
 });
 
 app.post('/details', (req, res) => {
@@ -475,14 +485,14 @@ app.post('/details', (req, res) => {
 // "profile" page routes
 app.get('/profile', (req, res) => {
 
-  const userExists = req.session.user;
-  if(!req.session.user) 
+  const loggedIn = req.session.user;
+  if(!loggedIn) 
   {
-    res.render('pages/login', {message: 'You are not logged in.', page_name:"login"});
+    res.render('pages/login', {loggedIn, message: 'You are not logged in.', page_name:"login"});
   }
   else
   {
-    res.render("pages/profile", {user: userData,page_name:"profile"});
+    res.render("pages/profile", {loggedIn, user: userData,page_name:"profile"});
   }
    
 
@@ -518,16 +528,18 @@ app.get("/logout", (req, res) => {
 
   if(req.session.user)
   {
+    var loggedIn = req.session.user;
     console.log("User logged out successfully")
     req.session.destroy();
     res.render("pages/login.ejs", {
       message: 'logged out successfully',
-      page_name:"login"
+      page_name:"login",
+      loggedIn
     });
   }
   else
   {
-    res.render('pages/login', {message: 'You are not logged in.', 
+    res.render('pages/login', {loggedIn, message: 'You are not logged in.', 
     page_name:"login"});
   }
 
@@ -535,6 +547,7 @@ app.get("/logout", (req, res) => {
 
 //PastVideos routes
 app.get('/pastVideos', (req, res) => {
+
   var query = `SELECT * FROM videos FULL JOIN users_to_videos 
   ON users_to_videos.movie_id = videos.video_id 
   WHERE users_to_videos.username = '${userData.username}';`;
@@ -546,6 +559,21 @@ app.get('/pastVideos', (req, res) => {
       res.render('pages/pastVideos', {videos: [], page_name:"history"});
   });
 });
+
+// get tags and post them onto the page
+// app.get('/tags', (req, res) => {
+//   pool.query('SELECT tag FROM tags ORDER BY tag ASC', (err, results) => {
+//     if(err)
+//     {
+//       console.log("There was an error fetching tags");
+
+//     }
+//     else
+//     {
+//       const tags = result.rows.map(row => row.tag);
+      
+//     }
+// });
 
 //Lab11 unit testing route
 app.get('/welcometest', (req, res) => {
