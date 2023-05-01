@@ -110,8 +110,7 @@
       <li <% if (page_name === 'history') { %>class="active" <% } %>><a class="bi bi-clock-fill" href="/pastVideos">History</a></li>
       <li <% if (page_name === 'profile') { %>class="active" <% } %>><a class="bi bi-person-circle" href="/profile">Profile</a></li>
       <li <% if (page_name === 'logout') { %>class="active" <% } %>><a class="bi bi-door-closed-fill" href="/logout">Logout</a></li>
-      <li <% if (page_name === 'login') { %>class="active" <% } %>><a class="bi bi-door-open-fill" href="/login">Login</a></li>
-      <%- include ('../partials/search') %>
+
     </ul>
     
     <style>
@@ -123,14 +122,14 @@
       }
 
       body {
-        background: #14171a;
+        background: black;
         font-family: "Roboto", sans-serif;
         padding: 25px;
         text-align: center;
       }
 
       .navbar {
-        background: #33363d;
+        background: black;
         display: inline-block;
         padding: 0 15px;
         position: relative;
@@ -144,7 +143,7 @@
       }
       .navbar li a {
         display: block;
-        color: #14171a;
+        color: #efefc9d4;
         text-decoration: none;
         font-size: 32px;
         transition: ease-in 0.3s;
@@ -163,7 +162,7 @@
         position: absolute;
         height: 5px;
         padding: 0;
-        background: #b4a200;
+        background: darkred;
         transition: ease-in 0.3s;
         top: calc(100% - 5px);
         border-radius: 2em;

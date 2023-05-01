@@ -1,10 +1,15 @@
-<%- include ('../partials/header') %>
+<% if (loggedIn) { %>
+  <%- include ('../partials/header') %>
+<% } else { %>
+  <%- include ('../partials/headNoLogin') %>
+<% } %>
 <head>
   
   <main>
     <div class="container">
 
 <main>
+
   <div class="container">
 
     <div class="col"><%- include ('../partials/message') %></div>

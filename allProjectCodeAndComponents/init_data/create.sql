@@ -11,12 +11,6 @@ CREATE TABLE platforms(
 );
 
 DROP TABLE IF EXISTS videos CASCADE;
-CREATE TABLE platforms(
-    platform_id SERIAL PRIMARY KEY NOT NULL,
-    platform VARCHAR(20)
-);
-
-DROP TABLE IF EXISTS videos CASCADE;
 CREATE TABLE videos(
     video_id SERIAL PRIMARY KEY NOT NULL,
     title text,
@@ -31,8 +25,6 @@ CREATE TABLE tags(
     tag_id SERIAL PRIMARY KEY NOT NULL,
     tag VARCHAR(20)
 );
-
-
 
 DROP TABLE IF EXISTS users_to_videos CASCADE;
 CREATE TABLE users_to_videos(
@@ -49,4 +41,3 @@ CREATE TABLE videos_to_tags(
     FOREIGN KEY (video_id) REFERENCES videos (video_id),
     FOREIGN KEY (tag_id) REFERENCES tags (tag_id)
 );
-

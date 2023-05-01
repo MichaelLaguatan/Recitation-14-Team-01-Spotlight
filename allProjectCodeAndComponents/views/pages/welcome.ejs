@@ -1,19 +1,41 @@
-<%- include ('../partials/header') %>
-
+<% if (loggedIn) { %>
+  <%- include ('../partials/header') %>
+<% } else { %>
+  <%- include ('../partials/headNoLogin') %>
+<% } %>
 <main>
   
   <div class="container">
     <div class="col"><%- include ('../partials/message') %></div>
     <h2>Welcome to Spotlight!</h2>
     <h5>Browse Tags:</h5>
-    <div class="tags-container">
+    <div class="somethingelse">
       <h2>Tags</h2>
-      <ul class="tags-list">
+      <ul class="something">
         <% tags.forEach(tag => { %>
-          <li><a href="/tags/<%= tag %>"><%= tag %></a></li>
+          <div class="card card-body">
+            <a href="/home/<%= tag %>"><%= tag %></a>
+          </div>
         <% }); %>
       </ul>
     </div>
+  </div>
 </main>
+<style>
+   .card {
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.484);
+  }
+  .card .card-body {
+    pointer-events: none;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    color: #fff;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+</style>
 
 <%- include ('../partials/footer') %>
