@@ -110,7 +110,7 @@
       <li <% if (page_name === 'history') { %>class="active" <% } %>><a class="bi bi-clock-fill" href="/pastVideos">History</a></li>
       <li <% if (page_name === 'profile') { %>class="active" <% } %>><a class="bi bi-person-circle" href="/profile">Profile</a></li>
       <li <% if (page_name === 'logout') { %>class="active" <% } %>><a class="bi bi-door-closed-fill" href="/logout">Logout</a></li>
-
+      <%- include ('../partials/search') %>
     </ul>
     
     <style>
