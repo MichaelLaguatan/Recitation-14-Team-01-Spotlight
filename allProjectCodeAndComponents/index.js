@@ -238,6 +238,7 @@ function addVideo(title, platform, description, link){
     movie_id = data[0].video_id;
     var userQuery = `INSERT INTO users_to_videos (username, movie_id) VALUES ('${userData.username}', ${movie_id}) RETURNING *;`;
     db.any(userQuery)
+  })
     .then(function(data){
       return;
     })
