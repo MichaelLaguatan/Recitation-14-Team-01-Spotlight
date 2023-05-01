@@ -470,6 +470,7 @@ app.get('/home', (req, res) => {
 app.post('/details', (req, res) => {
   let result = JSON.parse(req.body.b);
   const query = `SELECT * FROM videos WHERE videos.title = '${result.title}' LIMIT 1;`;
+  var loggedIn = req.session.user;
   db.one(query)
   .then((data) => {
     console.log(data);
@@ -481,7 +482,7 @@ app.post('/details', (req, res) => {
     addVideo(result.title, 2, result.description, result.url);
   }
   });
-  res.render('pages/details', { result,page_name:"details" });
+  res.render('pages/details', {loggedIn, result,page_name:"details" });
 })
 // "profile" page routes
 app.get('/profile', (req, res) => {
