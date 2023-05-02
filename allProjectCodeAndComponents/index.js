@@ -117,7 +117,7 @@ app.post('/register', async (req, res) => {
     const hash = await bcrypt.hash(req.body.password, 10);
     var password = hash;
     var username = req.body.username;
-
+    var loggedIn = req.session.user;
     var insert_data = `
     INSERT INTO users(username, password)
     VALUES ('${username}', '${password}');`;
@@ -129,7 +129,7 @@ app.post('/register', async (req, res) => {
     .catch(err => {
         console.log('Registration failed');
         console.log(err);
-        res.render('pages/register.ejs', {message: 'An account with that username already exists.'});
+        res.render('pages/register.ejs', {loggedIn, message: 'An account with that username already exists.', page_name:'register'});
 //         res.render("pages/login.ejs", {
 // message: 'Wrong password, please try again',
 //         });
@@ -368,7 +368,7 @@ app.get('/login', (req, res) => {
 
 app.post('/login', (req, res) => {
     var username = req.body.username;
-
+    var loggedIn = req.session.user;
     db.one(`SELECT * FROM users WHERE username='${username}' LIMIT 1;`)
     .then(async user => {
         // check if password from request matches with password in DB
@@ -384,7 +384,7 @@ app.post('/login', (req, res) => {
             //throw Error("Incorrect username or password");
             console.log("Incorrect username or password")
             res.render("pages/login", { 
-              message: 'Incorrect username or password, please try again', page_name:"login"
+              loggedIn, message: 'Incorrect username or password, please try again', page_name:"login"
             });
         }
        
@@ -392,8 +392,8 @@ app.post('/login', (req, res) => {
     })
     .catch(err => {
         console.log(err);
-        res.render("pages/register.ejs", {
-          message: 'User does not exist.',
+        res.render("pages/register.ejs", {loggedIn, 
+          message: 'User does not exist.', page_name: "register"
         });
     });
 });
