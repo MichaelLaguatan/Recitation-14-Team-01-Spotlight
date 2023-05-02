@@ -109,7 +109,7 @@ app.get('/welcome', (req,res)=>
 // "register" page routes
 app.get('/register', (req, res) => {
     var loggedIn = req.session.user;
-    res.render('pages/register',{page_name:"register", loggedIn});
+    res.render('pages/register',{page_name:"register", loggedIn,page_name:"login"});
 });
 
 // Register
@@ -129,7 +129,7 @@ app.post('/register', async (req, res) => {
     .catch(err => {
         console.log('Registration failed');
         console.log(err);
-        res.render('pages/register.ejs', {message: 'An account with that username already exists.'});
+        res.render('pages/register.ejs', {message: 'An account with that username already exists.',page_name:"login", loggedIn:req.session.user});
 //         res.render("pages/login.ejs", {
 // message: 'Wrong password, please try again',
 //         });
@@ -353,7 +353,7 @@ app.post('/login', (req, res) => {
     .catch(err => {
         console.log(err);
         res.render("pages/register.ejs", {
-          message: 'User does not exist.',
+          message: 'User does not exist.',page_name:"login", loggedIn:req.session.user
         });
     });
 });
