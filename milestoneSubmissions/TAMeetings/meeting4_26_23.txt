@@ -1,2 +1,15 @@
 TA Meeting:
+Scribe: Owen
+
+Check in:
+
+Overall we have all done work.
+Release notes and other requiremnts looking good!
+Just kidding, release notes need to be edited but other than thatk all requirements looking good.
+
+Each person shows off one good commit they've done for the week.
+Everyone is killing it and stuff becuase we've all done work.
+
+Nice.
+
 
