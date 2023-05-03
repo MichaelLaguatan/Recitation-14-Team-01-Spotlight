@@ -109,7 +109,7 @@ app.get('/welcome', (req,res)=>
 // "register" page routes
 app.get('/register', (req, res) => {
     var loggedIn = req.session.user;
-    res.render('pages/register',{page_name:"register", loggedIn});
+    res.render('pages/register',{page_name:"register", loggedIn,page_name:"login"});
 });
 
 // Register
@@ -130,6 +130,7 @@ app.post('/register', async (req, res) => {
         console.log('Registration failed');
         console.log(err);
         res.render('pages/register.ejs', {loggedIn, message: 'An account with that username already exists.', page_name:'register'});
+
 //         res.render("pages/login.ejs", {
 // message: 'Wrong password, please try again',
 //         });
@@ -397,6 +398,7 @@ app.post('/login', (req, res) => {
         console.log(err);
         res.render("pages/register.ejs", {loggedIn, 
           message: 'User does not exist.', page_name: "register"
+
         });
     });
 });
@@ -513,6 +515,7 @@ app.get('/home', (req, res) => {
 app.post('/details', (req, res) => {
   let result = JSON.parse(req.body.b);
   const query = `SELECT * FROM videos WHERE videos.title = '${result.title}' LIMIT 1;`;
+  var loggedIn = req.session.user;
   db.one(query)
   .then((data) => {
     console.log(data);
@@ -527,8 +530,9 @@ app.post('/details', (req, res) => {
     addVideo(result.title, 2, result.description, result.url);
   }
   });
-  res.render('pages/details', {result,page_name:"details" });
-});
+
+  res.render('pages/details', {loggedIn, result,page_name:"details" });
+})
 
 // "profile" page routes
 app.get('/profile', (req, res) => {

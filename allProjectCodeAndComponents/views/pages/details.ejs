@@ -1,4 +1,8 @@
-<%- include ('../partials/header') %>
+<% if (loggedIn) { %>
+  <%- include ('../partials/header') %>
+<% } else { %>
+  <%- include ('../partials/headnoLogin') %>
+<% } %>
 
 <main>
   <div class="container">
