@@ -4,37 +4,57 @@
   <%- include ('../partials/headnoLogin') %>
 <% } %>
 <main>
-  
   <div class="container">
     <div class="col"><%- include ('../partials/message') %></div>
     <h2>Welcome to Spotlight!</h2>
-    <h5>Browse Tags:</h5>
-    <div class="somethingelse">
-      <h2>Tags</h2>
-      <ul class="something">
+    <h5>Feeling Lazy? Quick search!</h5>
+    <div>
         <% tags.forEach(tag => { %>
-          <div class="card card-body">
-            <a href="/home/<%= tag %>"><%= tag %></a>
-          </div>
+          <ul class="tag">
+          <form  method="POST" action="/home" onsubmit="addloading()">
+            <input type="hidden" name="q" value="<%= tag %>">
+            <button class="tag-box" type="submit"><%= tag %></button>
+          </form>
+          </ul>
         <% }); %>
       </ul>
     </div>
   </div>
 </main>
+
 <style>
-   .card {
-    position: relative;
-    background-color: rgba(0, 0, 0, 0.484);
+  .tag-box {
+    background-color: darkred;
+    color: goldenrod;
+    border: 2px solid darkred;
+    border-radius: 10px;
+    
   }
-  .card .card-body {
-    pointer-events: none;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    color: #fff;
-    padding: 20px;
-    background-color: rgba(0, 0, 0, 0.5);
+   .tag-container {
+    position:relative;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .tag
+  {
+    display: inline-block;
+    position: relative;
+    margin: 10px;
+    padding: 10px 20px;
+    border: 2px solid goldenrod;
+    color: goldenrod;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: rgba(166, 15, 15, 0.700);
+    transition: all 0.3s ease;
+    border-radius: 10px;
+  }
+  .tag:hover {
+    color: pink;
+    background-color: goldenrod;
+    border-color: goldenrod;
+    transform: scale(0.8);
   }
 </style>
 

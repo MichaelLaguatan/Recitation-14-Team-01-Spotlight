@@ -3,6 +3,7 @@
 <% } else { %>
   <%- include ('../partials/headnoLogin') %>
 <% } %>
+
 <main>
   <div class="container">
     <div class="col"><%- include ('../partials/message') %></div>
@@ -14,7 +15,7 @@
           
         <%} if (result.platform == 1) {%>
         <% let id = result.link.split("=")[1]; %>
-          <a href="<%= result.url %>">Watch on YouTube</a>
+          <a style="background-color:black" href="<%= result.url %>">Watch on YouTube</a>
           <iframe  height = "900px" src="https://www.youtube.com/embed/<%= id %>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         <%}%>
         <% if(result.platform == 'vimeo') {%>
