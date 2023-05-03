@@ -359,6 +359,9 @@ app.get('/test', (req, res)=> {
   
 });
 
+app.get('/redtest', (req, res)=> {
+  res.redner('pages/home', { page_name:"home",query:req.body.q});
+});
 // "login" page routes
 app.get('/login', (req, res) => {
     var loggedIn = req.session.user;
