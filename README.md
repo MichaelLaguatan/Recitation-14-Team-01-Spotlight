@@ -34,5 +34,5 @@ To run the unit tests and have the node server continue running afterwards, chan
 
 
 **Link to the deployed application**
-
+http://recitation-014-team-01.eastus.cloudapp.azure.com:3000/
 
